@@ -1,0 +1,28 @@
+%document classe peut changer
+\documentclass[beamer]{standalone}
+
+%usepackage&uselibrary
+
+\begin{document}
+	
+	\begin{tikzpicture} [%parametres de tikzpicture
+							]
+
+		\node (nom node) [options separées par virgules] {affichage};
+		\node ...
+		...
+		%options qui nous interessent : fill, label
+		%option utilisable? double, 
+		
+		\path
+		(nom node A) edge[options separées par virgules] (nom node B)
+		(nom node A) edge[opt...
+		...
+		%arc ou arrete :option OBLIGATOIRE: -> ou --
+		%options qui nous interessent : "color", 
+		%option utilisable? weight, 
+		
+	\end{tikzpicture}
+	
+\end{document}
+

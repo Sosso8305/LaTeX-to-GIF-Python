@@ -19,6 +19,15 @@ class Node:
 
 class Link:
     def __init__(self,N1,N2,weigth,arrow,color):
+        """ link between two node 
+
+        Args:
+            N1 (Node): first node
+            N2 (Node): second node
+            weigth (int): weight of arc or arrow
+            arrow (boolean): choose if it's an arrow
+            color (string): colors of arc or arrow
+        """
         self.node1 = N1
         self.node2 = N2
         self.weight = weigth

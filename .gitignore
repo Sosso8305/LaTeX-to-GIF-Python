@@ -1,2 +1,5 @@
 # Virtual environnement 
 .venv/*
+
+#file of LaTeX
+LaTeX/*

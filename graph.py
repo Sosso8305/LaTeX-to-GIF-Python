@@ -3,7 +3,7 @@ from node import Node
 class Graph:
     def __init__(self,name,tikzpicture):
         self.name = name
-        self.tikzpicture
+        self.tikzpicture = tikzpicture
         self.allNodes = set() #mathematical set for don't have twice times one node
         self.allLinks = []
 

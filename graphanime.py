@@ -36,19 +36,25 @@ def load(file):
             options = command[(command.find("[")+1):command.find("]")]
             options = options.split(',')
 
-            
+            exist_fill=0
+            exist_label=0
             opt_del=[]
             for opt in options:
                 if opt.find("fill") != -1:
                     fill = opt[5:]
                     opt_del.append(opt)
+                    exist_fill=1
                     
 
                 elif opt.find("label") != -1:
                     label = opt[6:]
                     opt_del.append(opt)
+                    exist_label = 1
                     
-         
+            if not exist_fill:
+                fill = 0 #print(issubclass(fill.__class__, str)): false
+            if not exist_label:
+                label = 0 #print(issubclass(fill.__class__, str)): false
             options = [x for x in options if x not in opt_del]
 
             options = ",".join(options)

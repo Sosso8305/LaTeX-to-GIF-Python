@@ -1,17 +1,19 @@
 
 class Node:
-    def __init__(self,name,color,label):
+    def __init__(self,name,color,label,options):
         """Create one node with few parameters 
 
         Args:
             name (string): name or numbers
             color (string): color of node
-            label (string): annatotion side of node 
+            label (string): annatotion side of node
+            options(string): all options useless
         """
         self.name = name
         self.color = color
         self.label = label
         self.successor = []
+        self.options = options
 
     def addSuccessor(self,node):
         self.successor.append(node)

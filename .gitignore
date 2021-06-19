@@ -3,3 +3,9 @@
 
 #file of LaTeX
 LaTeX/*
+
+# setting of VScode
+.vscode/*
+
+#compile file python
+__pycache__/*

@@ -1,4 +1,4 @@
-import node
+from node import Node
 
 class Graph:
     def __init__(self,name):
@@ -7,6 +7,12 @@ class Graph:
         self.allLinks = []
 
     def addLink(self,link):
-        self.allNodes.append(link.node1)
-        self.allNodes.append(link.node2)
+        self.allNodes.add(link.node1)
+        self.allNodes.add(link.node2)
         self.allLinks.append(link)
+
+    def addOnlyLink(self,link):
+        self.allLinks.append(link)
+
+    def addNode(self,node):
+        self.allNodes.add(node)

@@ -4,10 +4,15 @@ from node import Node, Link
 def load(file):
     fileTex = open(file,"r")
 
-    
+    fragTexts = fileTex.readline()
+    for text in fragTexts:
+        i=0
+        while i<len(text):
+            if text[i] == '%':
+                text = text[0:i]
 
-    allText = fileTex.read()
-    
+    allText = ''.join(fragTexts)
+
     AllCommand  = allText[allText.find("\\begin{tikzpicture}"):allText.find("\\end{tikzpicture}")]
     end_option_tikzpicture = AllCommand.find("]")
     option_tikzpicture = AllCommand[AllCommand.find("["):end_option_tikzpicture]

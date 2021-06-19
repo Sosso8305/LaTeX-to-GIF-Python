@@ -27,7 +27,7 @@ class Link:
             N1 (Node): first node
             N2 (Node): second node
             weigth (int): weight of arc or edge
-            edge (boolean): choose if it's an edge
+            edge (boolean): choose if it's an edge(not oriented)
             color (string): colors of arc or edge
         """
         self.node1 = N1

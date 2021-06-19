@@ -17,3 +17,7 @@ class Graph:
 
     def addNode(self,node):
         self.allNodes.add(node)
+
+    def copyTo(self):
+        from copy import deepcopy
+        return deepcopy(self)

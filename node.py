@@ -20,7 +20,7 @@ class Node:
 
 
 class Link:
-    def __init__(self,N1,N2,weigth,edge,color):
+    def __init__(self,N1,N2,weigth,edge,color,other_options):
         """ link between two node 
 
         Args:
@@ -35,5 +35,6 @@ class Link:
         self.weight = weigth
         self.edge = edge # true or false
         self.color = color
+        self.other_options = other_options
 
 

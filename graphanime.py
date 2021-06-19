@@ -66,15 +66,40 @@ def load(file):
             continue
 
 
-    #     if command.find("\\path") != -1:
-    #         endNameFirstNode =command.find(")")
-    #         str_node1 = command[(command.find("(")+1):endNameFirstNode]
-    #         str_node2 = command[(endNameFirstNode+1):]
-    #         str_node2 = str_node2
-    #         print(str_node1,str_node2)
+        if command.find("\\path") != -1:
+            endNameFirstNode =command.find(")")
+            str_node1 = command[(command.find("(")+1):endNameFirstNode]
+            str_node2 = command[(endNameFirstNode+1):]
+            str_node2 = str_node2[(str_node2.find("(")+1):str_node2.find(")")]
             
-    
-    print(G.allNodes)
+
+            options = command[(command.find("[")+1):command.find("]")]
+            options = options.split(',')
+            
+            
+            weight = 1
+
+            opt_del=[]
+            for opt in options:
+                if opt.find("-") != -1:
+                    edge = (opt.find("--") != -1)
+                    opt_del.append(opt)
+
+                elif opt.find("color") != -1:
+                    color = opt[6:]
+                    opt_del.append(opt)
+
+                elif opt.find("weight") != -1:
+                    weight = opt[7:]
+                    opt_del.append(opt)
+
+
+            options = [x for x in options if x not in opt_del]
+
+            options = ",".join(options)
+            
+            G.addLink(Link(globals()[str_node1],globals()[str_node2],weigth,edge,color,options))
+
 
 def Dijkstra(Graph,source,sink):
     print("TODO")

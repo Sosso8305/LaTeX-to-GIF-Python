@@ -7,15 +7,10 @@ def load(file):
     fragTexts = fileTex.readlines()
     line =[]
     for text in fragTexts:
-        i=0
-        while i<len(text):
-            if text[i] == '%':
-                text = text[0:i]
-                text += '\n'
-            i+=1
-        
+        if text.find('%') !=-1:
+            text = text[:text.find('%')]
+            text += '\n'
         line.append(text)
-            
 
     allText = ''.join(line)
 

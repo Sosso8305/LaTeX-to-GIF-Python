@@ -15,22 +15,21 @@ def load(file):
     allText = ''.join(line)
 
     # Get the uspackage&uselibrary lines
-    Allpackage = allText[allText.find("\\documentclass[tikz]{standalone}"):allText.find("\\begin{document}")]
-
+    dependencies = allText[allText.find("\\documentclass[tikz]{standalone}")+len('\documentclass[tikz]{standalone}'):allText.find("\\begin{document}")]
 
     AllCommand  = allText[allText.find("\\begin{tikzpicture}"):allText.find("\\end{tikzpicture}")]
     end_option_tikzpicture = AllCommand.find("]")
     option_tikzpicture = AllCommand[AllCommand.find("["):end_option_tikzpicture]
     AllCommand = AllCommand[(end_option_tikzpicture+1):]
     
-    G= Graph("G", option_tikzpicture, Allpackage)
+    G= Graph("G", option_tikzpicture, dependencies)
 
     AllCommand = AllCommand.split(';')
 
 
     for command in AllCommand:
 
-        command= ''.join(command.split())
+        command= ''.join(command.split()) # Removes spaces
 
 
         if command.find("\\node") != -1:

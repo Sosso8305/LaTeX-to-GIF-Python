@@ -1,9 +1,10 @@
 from node import Node
 
 class Graph:
-    def __init__(self,name,option_tikzpicture):
+    def __init__(self,name,option_tikzpicture, dependencies):
         self.name = name
         self.option_tikzpicture = option_tikzpicture
+        self.dependencies = dependencies
         self.allNodes = set() #mathematical set for don't have twice times one node
         self.allLinks = []
 

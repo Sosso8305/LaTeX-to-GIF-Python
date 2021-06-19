@@ -4,6 +4,7 @@ from node import Node, Link
 def load(file):
     fileTex = open(file,"r")
 
+    # Remove comments
     fragTexts = fileTex.readlines()
     line =[]
     for text in fragTexts:
@@ -11,17 +12,18 @@ def load(file):
             text = text[:text.find('%')]
             text += '\n'
         line.append(text)
-
     allText = ''.join(line)
 
-    print(allText)
+    # Get the uspackage&uselibrary lines
+    Allpackage = allText[allText.find("\\documentclass[tikz]{standalone}"):allText.find("\\begin{document}")]
+
 
     AllCommand  = allText[allText.find("\\begin{tikzpicture}"):allText.find("\\end{tikzpicture}")]
     end_option_tikzpicture = AllCommand.find("]")
     option_tikzpicture = AllCommand[AllCommand.find("["):end_option_tikzpicture]
     AllCommand = AllCommand[(end_option_tikzpicture+1):]
     
-    G= Graph("G", option_tikzpicture)
+    G= Graph("G", option_tikzpicture, Allpackage)
 
     AllCommand = AllCommand.split(';')
 

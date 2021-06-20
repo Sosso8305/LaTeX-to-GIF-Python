@@ -1,7 +1,7 @@
 from node import Node
 
 class Graph:
-    def __init__(self,name,option_tikzpicture, dependencies):
+    def __init__(self,name,option_tikzpicture="", dependencies=""):
         self.name = name
         self.option_tikzpicture = option_tikzpicture
         self.dependencies = dependencies
@@ -22,3 +22,6 @@ class Graph:
     def copyTo(self):
         from copy import deepcopy
         return deepcopy(self)
+
+    def writeLaTeX(self):
+        return "toto \n"

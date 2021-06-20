@@ -100,10 +100,34 @@ def load(file):
             
             G.addLink(Link(globals()[str_node1],globals()[str_node2],weight,edge,color,options))
 
+    return G
 
 
 def Dijkstra(Graph,source,sink):
     print("TODO")
 
 
-load("LaTeX/Text.tex")
+def genpdf(anim,file):
+    
+    fOut = open(file+".tex","a")
+
+    fOut.write("\\documentclass[tikz]{standalone} \n")
+    fOut.write( anim[0].dependencies + "\n")
+    fOut.write("\\begin{document} \n")
+
+    for G in anim:
+        fOut.write(G.writeLaTeX())
+    
+    fOut.write("\\end{document}")
+
+
+
+
+if __name__ == "__main__":
+
+    load("LaTeX/Text.tex")
+
+    A = [load('LaTeX/Text.tex'), load('LaTeX/Test.tex')]
+
+    genpdf(A,"first")
+

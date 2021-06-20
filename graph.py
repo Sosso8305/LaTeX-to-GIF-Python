@@ -37,7 +37,7 @@ class Graph:
                 command += f",fill={n.color}"
             if n.label != "":
                 command += f",label={n.label}"
-            command+= f"] ({n.name});"
+            command+= f"] {{{n.name}}};"
             AllCommand.append(command)
         
         #Loop path

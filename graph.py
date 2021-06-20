@@ -6,11 +6,12 @@ class Graph:
         self.option_tikzpicture = option_tikzpicture
         self.dependencies = dependencies
         self.allNodes = set() #mathematical set for don't have twice times one node
+                                #set are not ordered : graphs may change each frame
         self.allLinks = []
 
     def addLink(self,link):
-        self.allNodes.add(link.node1)
-        self.allNodes.add(link.node2)
+        self.allNodes.add(link.node1) #pourquoi ?
+        self.allNodes.add(link.node2) #pourquoi ?
         self.allLinks.append(link)
 
     def addOnlyLink(self,link):
@@ -24,23 +25,34 @@ class Graph:
         return deepcopy(self)
 
     def writeLaTeX(self):
-        """AllCommand = []
-        AllCommand.append("\\begin{tikzpicture} ["+self.option_tikzpicture+']')
+        AllCommand = []
+        AllCommand.append(f"\\begin{{tikzpicture}} [{self.option_tikzpicture}]")
         
         #Loop node
-        for x in self.allNodes :
-            if x==Node.name :
-                AllCommand.append("\\node ("+Node.name+") ["+Node.options+"] {"+Node.name+"};")
+        for n in self.allNodes :
+            command = f"\\node ({n.name}) ["
+            if n.options != "":
+                command += n.options
+            if n.color != "":
+                command += f",fill={n.color}"
+            if n.label != "":
+                command += f",label={n.label}"
+            command+= f"] ({n.name});"
+            AllCommand.append(command)
         
         #Loop path
-        i=0
-        while i < len(self.allNodes) :
-            if self.allLinks[i]==Link.name :
-                AllCommand.append("\\path ("+Link.node1+") edge["+Link.other_options+"] ("+Link.node2+");")
-            i+=1
+        for l in self.allLinks :
+            command = f"\\path ({l.node1.name}) edge["
+            if l.other_options != "":
+                command += f"{l.other_options},"
+            command += f"{'--' if l.edge else '->'}"
+            command += ',"' + l.weight + '"'
+            if l.color != "":
+                command += f",color={l.color}"
+            command += f"] ({l.node2.name});"
+            AllCommand.append(command)
         
         AllCommand.append("\\end{tikzpicture}")
         AllCommand = '\n'.join(AllCommand)
         
-        return AllCommand"""
-        return "toto \n"
+        return AllCommand

@@ -19,7 +19,7 @@ def load(file):
 
     AllCommand  = allText[allText.find("\\begin{tikzpicture}"):allText.find("\\end{tikzpicture}")]
     end_option_tikzpicture = AllCommand.find("]")
-    option_tikzpicture = AllCommand[AllCommand.find("["):end_option_tikzpicture]
+    option_tikzpicture = AllCommand[AllCommand.find("[")+1:end_option_tikzpicture]
     AllCommand = AllCommand[(end_option_tikzpicture+1):]
     
     G= Graph("G", option_tikzpicture, dependencies)
@@ -29,7 +29,8 @@ def load(file):
 
     for command in AllCommand:
 
-        command= ''.join(command.split()) # Removes spaces
+        command= ''.join(command.split()) # Removes spaces 
+        #WIP some options may need spaces?
 
 
         if command.find("\\node") != -1:
@@ -37,8 +38,8 @@ def load(file):
             options = options.split(',')
 
             opt_del=[]
-            fill = 0 #print(issubclass(fill.__class__, str)): false
-            label = 0 #print(issubclass(label.__class__, str)): false
+            fill ="" 
+            label ="" 
             for opt in options:
                 if opt.find("fill") != -1:
                     fill = opt[5:]
@@ -70,7 +71,7 @@ def load(file):
             options = options.split(',')
 
             opt_del=[]
-            color=0 #print(issubclass(color.__class__, str)): false
+            color="" 
             weight='1'
             for opt in options:
                 if opt.find("-") != -1:
@@ -81,8 +82,8 @@ def load(file):
                     color = opt[6:]
                     opt_del.append(opt)
 
-                elif opt.find("weight") != -1:
-                    weight = opt[7:]
+                elif opt.find('"') != -1:
+                    weight = opt[1:-1]
                     opt_del.append(opt)
 
             options = [x for x in options if x not in opt_del]
@@ -120,7 +121,7 @@ if __name__ == "__main__":
 
     load("LaTeX/Text.tex")
 
-    A = [load('LaTeX/Text.tex'), load('LaTeX/Test.tex')]
+    A = [load('LaTeX/Text.tex'), load('LaTeX/Text.tex')]
 
     genpdf(A,"LaTex/first")
 

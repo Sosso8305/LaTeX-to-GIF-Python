@@ -36,25 +36,18 @@ def load(file):
             options = command[(command.find("[")+1):command.find("]")]
             options = options.split(',')
 
-            exist_fill=0
-            exist_label=0
             opt_del=[]
+            fill = 0 #print(issubclass(fill.__class__, str)): false
+            label = 0 #print(issubclass(label.__class__, str)): false
             for opt in options:
                 if opt.find("fill") != -1:
                     fill = opt[5:]
                     opt_del.append(opt)
-                    exist_fill=1
-                    
 
                 elif opt.find("label") != -1:
                     label = opt[6:]
                     opt_del.append(opt)
-                    exist_label = 1
-                    
-            if not exist_fill:
-                fill = 0 #print(issubclass(fill.__class__, str)): false
-            if not exist_label:
-                label = 0 #print(issubclass(fill.__class__, str)): false
+
             options = [x for x in options if x not in opt_del]
 
             options = ",".join(options)
@@ -75,11 +68,10 @@ def load(file):
 
             options = command[(command.find("[")+1):command.find("]")]
             options = options.split(',')
-            
-            
-            weight = 1
 
             opt_del=[]
+            color=0 #print(issubclass(color.__class__, str)): false
+            weight='1'
             for opt in options:
                 if opt.find("-") != -1:
                     edge = (opt.find("--") != -1)
@@ -92,7 +84,6 @@ def load(file):
                 elif opt.find("weight") != -1:
                     weight = opt[7:]
                     opt_del.append(opt)
-
 
             options = [x for x in options if x not in opt_del]
 
@@ -111,12 +102,14 @@ def genpdf(anim,file):
     
     fOut = open(file+".tex","a")
 
-    fOut.write("\\documentclass[tikz]{standalone} \n")
+    fOut.write("\\documentclass{beamer} \n")
     fOut.write( anim[0].dependencies + "\n")
     fOut.write("\\begin{document} \n")
 
     for G in anim:
+        fOut.write("\\begin{frame} \n")
         fOut.write(G.writeLaTeX())
+        fOut.write("\\end{frame} \n")
     
     fOut.write("\\end{document}")
 
@@ -129,5 +122,5 @@ if __name__ == "__main__":
 
     A = [load('LaTeX/Text.tex'), load('LaTeX/Test.tex')]
 
-    genpdf(A,"first")
+    genpdf(A,"LaTex/first")
 

@@ -98,7 +98,8 @@ def load(file):
 
             options = ",".join(options)
             
-            G.addLink(Link(globals()[str_node1],globals()[str_node2],weigth,edge,color,options))
+            G.addLink(Link(globals()[str_node1],globals()[str_node2],weight,edge,color,options))
+
 
 
 def Dijkstra(Graph,source,sink):

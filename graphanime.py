@@ -1,6 +1,5 @@
 from heapq import heappop, heappush
 from graph import Graph
-from node import Node, Link
 
 # Define constants as in pseudo-code
 WHITE = (255, 255, 255)
@@ -33,10 +32,7 @@ def load(file):
 
     AllCommand = AllCommand.split(';')
 
-
     for command in AllCommand:
-
-        command= ''.join(command.split('\n'))
 
         if command.find("\\node") != -1:
             options = command[(command.find("[")+1):command.find("]")]
@@ -58,47 +54,36 @@ def load(file):
 
             options = ",".join(other_options)
             
-            str_node = command[(command.find("(")+1):command.find(")")] 
-            globals()[str_node]= Node(command[(command.find("{")+1):command.find("}")],fill,label,options)
+            name = command[(command.rfind("{")+1):command.rfind("}")] 
 
-            G.addNode(globals()[str_node])
-            continue
+            G.add_node(name, fill=fill, label=label, node_options=options)
 
+        elif command.find("\\path") != -1:
+            command = command.splitlines()
+            for c in command:
+                edge=(c[c.find("(")+1:c.find(")")], c[c.rfind("(")+1:c.rfind(")")])
+                options = command[(command.find("[")+1):command.find("]")]
+                options = options.split(',')
 
-        if command.find("\\path") != -1:
-            endNameFirstNode =command.find(")")
-            str_node1 = command[(command.find("(")+1):endNameFirstNode]
-            str_node2 = command[(endNameFirstNode+1):]
-            str_node2 = str_node2[(str_node2.find("(")+1):str_node2.find(")")]
-            
+                other_options=[]
+                color="" 
+                weight=''
+                for opt in options:
+                    if opt.find("-") != -1:
+                        opt=''.join(opt.split())
+                        orientation = (opt.find("--") != -1)
 
-            options = command[(command.find("[")+1):command.find("]")]
-            options = options.split(',')
+                    elif opt.find("color") != -1:
+                        opt=''.join(opt.split())
+                        color = opt[6:]
 
-            other_options=[]
-            color="" 
-            weight='1'
-            for opt in options:
-                if opt.find("-") != -1:
-                    opt=''.join(opt.split())
-                    edge = (opt.find("--") != -1)
+                    elif opt.find('"') != -1:
+                        opt=''.join(opt.split())
+                        weight = opt[1:-1]
 
-                elif opt.find("color") != -1:
-                    opt=''.join(opt.split())
-                    color = opt[6:]
-
-                elif opt.find('"') != -1:
-                    opt=''.join(opt.split())
-                    weight = opt[1:-1]
-
-            options = ",".join(other_options)
-            
-            G.addOnlyLink(Link(globals()[str_node1],globals()[str_node2],weight,edge,color,options))
-
-
-    #add all successor for each node
-    for link in G.allLinks:
-           link.node1.addSuccessor(link.node2) 
+                options = ",".join(other_options)
+                
+                G.add_link(edge, orientation, weight=weight, color=color, edge_options=options)
 
     return G
 

@@ -1,5 +1,7 @@
 from heapq import heappop, heappush
 from graph import Graph
+from pdflatex import PDFLaTeX
+import os
 
 # Define constants as in pseudo-code
 WHITE = (255, 255, 255)
@@ -149,6 +151,9 @@ def FunctTest(Graph):
 
 
 def genpdf(anim,file):
+    if not os.path.exists("./out/"):
+        os.mkdir("./out/")
+    os.chdir("./out/")
     
     fOut = open(file+".tex","w")
 
@@ -163,7 +168,12 @@ def genpdf(anim,file):
     
     fOut.write("\\end{document}")
 
+    fOut.close()
 
+    pdfl = PDFLaTeX.from_texfile(file+".tex")
+    pdf, log, completed_process = pdfl.create_pdf(keep_pdf_file=True, keep_log_file=False)
+
+    os.chdir("../")
 
 
 if __name__ == "__main__":
@@ -172,5 +182,5 @@ if __name__ == "__main__":
     FunctTest(x)
     A = [load('LaTeX/Text.tex'), x]
 
-    genpdf(A,"LaTeX/first")
+    genpdf(A,"first")
 

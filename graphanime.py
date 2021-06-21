@@ -5,7 +5,12 @@ from graph import Graph
 WHITE = (255, 255, 255)
 GREY = (128, 128, 128)
 BLACK = (0, 0, 0)
-INFINI = 1000000
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+ORANGE = (255, 127, 0)
+YELLOW = (255, 255, 0)
+INFINI = "$\infty$"
 
 def load(file):
     fileTex = open(file,"r")
@@ -89,25 +94,37 @@ def load(file):
 
 def Dijkstra(Graph,source,sink):
     print("TODO")
-    relative_distance = 0
+    Graph_copy = Graph.copyTo()
+    liste_graphes = []
     distance_from_source = 0
     priority_queue = []
-    for s in Graph.allNodes:
+    for s in Graph_copy.allNodes:
         s.color = WHITE
-        s.label = str(INFINI) # Il me faut un nombre assez grand pour simuler l'infini   $\infty$
+        s.label = INFINI # Il me faut un nombre assez grand pour simuler l'infini
     heappush(priority_queue, (source, 0)) # Je mets dans ma file de priorités un tuple avec le noeud source et la valeur 0 (car distance de source à source = 0)
-    source.couleur = GREY
     source.label = str(0) # Le label tel que défini dans la classe Node contient la distance depuis le noeud source
+    liste_graphes.append(Graph_copy.copyTo())
+    source.couleur = GREY
+    liste_graphes.append(Graph_copy.copyTo())
+
     while(priority_queue):
         (noeud, distance_from_source) = heappop(priority_queue)
         noeud.couleur = GREY
+        liste_graphes.append(Graph_copy.copyTo())
+        
         for s in noeud.successors:
-            lien = Graph.getLink(noeud, s) # Obtient le lien entre le noeud actuellement étudié et son voisin
-            if distance_from_source + lien.weight < int(s.label): # Comme le label est un string, il faut le passer en int
+            lien = Graph_copy.getLink(noeud, s) # Obtient le lien entre le noeud actuellement étudié et son voisin
+            lien.color = ORANGE
+            liste_graphes.append(Graph_copy.copyTo())
+            if (s.label == INFINI) or (distance_from_source + lien.weight < int(s.label)): # Comme le label est un string, il faut le passer en int
                 s.label = str(distance_from_source + lien.weight)
+                liste_graphes.append(Graph_copy.copyTo())
                 s.predecessors.append(noeud)
                 heappush(priority_queue, (s, int(s.label)))
         noeud.couleur = BLACK
+        liste_graphes.append(Graph_copy.copyTo())
+    
+    return liste_graphes
 
 def FunctTest(Graph):
     i = 0

@@ -1,5 +1,5 @@
 class Graph:
-    def __init__(self,name,E=[], V=[], tikzpicture_option="", dependencies="", orientation={}):
+    def __init__(self,name,E, V, tikzpicture_option="", dependencies="", orientation={}):
         self.name = name
         self.tikzpicture_option = tikzpicture_option
         self.dependencies = dependencies
@@ -39,29 +39,29 @@ class Graph:
         #Loop node
         for e in self.E :
             command = f"\\node ({e}) ["
-            if self.node_options[e] != "":
-                command += n.options + ','
-            if n.color != "":
-                command += f"fill={n.color},"
-            if n.label != "":
-                command += f"label={n.label},"
+            if e in self.node_options.keys():
+                command += self.node_options[e] + ','
+            if e in self.fill.keys():
+                command += f"fill={self.fill[e]},"
+            if e in self.label.keys():
+                command += f"label={self.label[e]},"
             command+= f"] {{{e}}};"
             AllCommand.append(command)
         
         #Loop path
         for v in self.V :
             command = f"\\path ({v[0]}) edge["
-            if self.edge_options[v] != "":
+            if v in self.edge_options.keys():
                 command += f"{self.edge_options[v]},"
             command += f"{self.orientation[v]},"
-            if self.weight[v] != '':
+            if v in self.weight.keys():
                 command += '"' + self.weight[v] + '",'
-            if self.color[v] != "":
+            if v in self.color.keys():
                 command += f"color={self.color[v]},"
             command += f"] ({v[1]});"
             AllCommand.append(command)
         
-        AllCommand.append("\\end{tikzpicture}")
+        AllCommand.append("\\end{tikzpicture}\n")
         AllCommand = '\n'.join(AllCommand)
         
         return AllCommand

@@ -22,18 +22,15 @@ def load(file):
 
     # Get the uspackage&uselibrary lines
     dependencies = allText[allText.find("\\documentclass[tikz]{standalone}")+len('\documentclass[tikz]{standalone}'):allText.find("\\begin{document}")]
-
     AllCommand  = allText[allText.find("\\begin{tikzpicture}"):allText.find("\\end{tikzpicture}")]
     end_option_tikzpicture = AllCommand.find("]")
     option_tikzpicture = AllCommand[AllCommand.find("[")+1:end_option_tikzpicture]
     AllCommand = AllCommand[(end_option_tikzpicture+1):]
     
-    G= Graph("G", option_tikzpicture, dependencies)
+    G= Graph("G", [], [], tikzpicture_option=option_tikzpicture, dependencies=dependencies)
 
     AllCommand = AllCommand.split(';')
-
     for command in AllCommand:
-
         if command.find("\\node") != -1:
             options = command[(command.find("[")+1):command.find("]")]
             options = options.split(',')
@@ -61,8 +58,9 @@ def load(file):
         elif command.find("\\path") != -1:
             command = command.splitlines()
             for c in command:
+                if c.find('edge')==-1: continue
                 edge=(c[c.find("(")+1:c.find(")")], c[c.rfind("(")+1:c.rfind(")")])
-                options = command[(command.find("[")+1):command.find("]")]
+                options = c[(c.find("[")+1):c.find("]")]
                 options = options.split(',')
 
                 other_options=[]
@@ -71,7 +69,7 @@ def load(file):
                 for opt in options:
                     if opt.find("-") != -1:
                         opt=''.join(opt.split())
-                        orientation = (opt.find("--") != -1)
+                        orientation = opt
 
                     elif opt.find("color") != -1:
                         opt=''.join(opt.split())

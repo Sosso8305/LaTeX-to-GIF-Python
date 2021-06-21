@@ -21,13 +21,13 @@ def load(file):
     allText = ''.join(line)
 
     # Get the uspackage&uselibrary lines
-    dependencies = allText[allText.find("\\documentclass[tikz]{standalone}")+len('\documentclass[tikz]{standalone}'):allText.find("\\begin{document}")]
+    preambule = allText[allText.find("\\documentclass[tikz]{standalone}")+len('\documentclass[tikz]{standalone}'):allText.find("\\begin{document}")]
     AllCommand  = allText[allText.find("\\begin{tikzpicture}"):allText.find("\\end{tikzpicture}")]
     end_option_tikzpicture = AllCommand.find("]")
     option_tikzpicture = AllCommand[AllCommand.find("[")+1:end_option_tikzpicture]
     AllCommand = AllCommand[(end_option_tikzpicture+1):]
     
-    G= Graph("G", [], [], tikzpicture_option=option_tikzpicture, dependencies=dependencies)
+    G= Graph("G", [], [], {}, option_tikzpicture, preambule)
 
     AllCommand = AllCommand.split(';')
     for command in AllCommand:
@@ -50,10 +50,11 @@ def load(file):
                     other_options.append(opt)
 
             options = ",".join(other_options)
-            
+
+            id = command[(command.find("(")+1):command.find(")")]
             name = command[(command.rfind("{")+1):command.rfind("}")] 
 
-            G.add_node(name, fill=fill, label=label, node_options=options)
+            G.add_node(id, name, fill=fill, label=label, node_options=options)
 
         elif command.find("\\path") != -1:
             command = command.splitlines()
@@ -93,7 +94,7 @@ def Dijkstra(Graph,source,sink):
     priority_queue = []
     for s in Graph.allNodes:
         s.color = WHITE
-        s.label = str(INFINI) # Il me faut un nombre assez grand pour simuler l'infini
+        s.label = str(INFINI) # Il me faut un nombre assez grand pour simuler l'infini   $\infty$
     heappush(priority_queue, (source, 0)) # Je mets dans ma file de priorités un tuple avec le noeud source et la valeur 0 (car distance de source à source = 0)
     source.couleur = GREY
     source.label = str(0) # Le label tel que défini dans la classe Node contient la distance depuis le noeud source
@@ -108,6 +109,25 @@ def Dijkstra(Graph,source,sink):
                 heappush(priority_queue, (s, int(s.label)))
         noeud.couleur = BLACK
 
+def FunctTest(Graph):
+    i = 0
+    j = 0
+    for s in Graph.V:
+        if(i%3 == 0):
+            Graph.fill[s] = "red"
+        elif(i%3 == 1):
+            Graph.label[s] = "STI > toutes les autres filieres"
+        else:
+            Graph.label[s] = "TA XD GER SZ"
+            Graph.fill[s] = "green"
+        i += 1
+    for a in Graph.E:
+        if(j%2 == 0):
+            Graph.color[a] = "blue"
+        else:
+            Graph.weight[a] = "42"
+        j += 1
+    return "FunctTest\n"
 
 
 
@@ -116,7 +136,7 @@ def genpdf(anim,file):
     fOut = open(file+".tex","w")
 
     fOut.write("\\documentclass{beamer} \n")
-    fOut.write( anim[0].dependencies + "\n")
+    fOut.write( anim[0].preambule + "\n")
     fOut.write("\\begin{document} \n")
 
     for G in anim:
@@ -131,9 +151,9 @@ def genpdf(anim,file):
 
 if __name__ == "__main__":
 
-    load("LaTeX/Text.tex")
-
-    A = [load('LaTeX/Text.tex'), load('LaTeX/Text.tex')]
+    x = load('LaTeX/Text.tex')
+    FunctTest(x)
+    A = [load('LaTeX/Text.tex'), x]
 
     genpdf(A,"LaTeX/first")
 

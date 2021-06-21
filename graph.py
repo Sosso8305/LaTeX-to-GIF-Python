@@ -1,28 +1,36 @@
+from collections import defaultdict
 class Graph:
-    def __init__(self,name,E, V, tikzpicture_option="", dependencies="", orientation={}):
+    def __init__(self,name,V, E, orientation, tikzpicture_option="", preambule=""):
         self.name = name
-        self.tikzpicture_option = tikzpicture_option
-        self.dependencies = dependencies
-        self.E = E
-        self.fill = {}
-        self.label = {}
-        self.node_options = {}
         self.V = V
-        self.orientation = orientation
-        self.weight = {}
-        self.color = {}
-        self.edge_options = {}
+        self.E = E
 
-    def add_node(self,name,fill='', label='', node_options=''):
-        self.E.append(name)
-        if fill: self.fill[name]=fill
-        if label: self.label[name]=label
-        if node_options: self.node_options[name]=node_options
+        self.tikzpicture_option = tikzpicture_option
+        self.preambule =preambule
+
+        #option out for V
+        self.fill = defaultdict(lambda: '')
+        self.label = defaultdict(lambda: '')
+        self.node_options = defaultdict(lambda: '')
+        self.display_name = defaultdict(lambda: '')
+
+        #option out for E
+        self.orientation = orientation
+        self.weight = defaultdict(lambda: '')
+        self.color = defaultdict(lambda: '')
+        self.edge_options = defaultdict(lambda: '')
+
+    def add_node(self,id, display_name, fill='', label='', node_options=''):
+        self.V.append(id)
+        self.display_name[id] = display_name
+        if fill: self.fill[id]=fill
+        if label: self.label[id]=label
+        if node_options: self.node_options[id]=node_options
 
     def add_link(self, edge, orientation, weight='', color='', edge_options=''):
-        if not edge[0] in self.E: self.E.append(edge[0])
-        if not edge[1] in self.E: self.E.append(edge[1])
-        self.V.append(edge)
+        if not edge[0] in self.V: self.V.append(edge[0])
+        if not edge[1] in self.V: self.V.append(edge[1])
+        self.E.append(edge)
         self.orientation[edge] = orientation
         if weight: self.weight[edge] = weight
         if color: self.color[edge] = color
@@ -37,31 +45,61 @@ class Graph:
         AllCommand.append(f"\\begin{{tikzpicture}} [{self.tikzpicture_option}]")
         
         #Loop node
-        for e in self.E :
-            command = f"\\node ({e}) ["
-            if e in self.node_options.keys():
-                command += self.node_options[e] + ','
-            if e in self.fill.keys():
-                command += f"fill={self.fill[e]},"
-            if e in self.label.keys():
-                command += f"label={self.label[e]},"
-            command+= f"] {{{e}}};"
+        AllCommand.append(f"\\node at (-4,-4) (cornerdiapo1) [text=white] {{cornerdiapo1}};\n\\node at (6,5) (cornerdiapo2) [text=white] {{cornerdiapo2}};")
+        for v in self.V :
+            command = f"\\node ({v}) ["
+            if v in self.node_options.keys():
+                command += self.node_options[v] + ','
+            if v in self.fill.keys():
+                command += f"fill={self.fill[v]},"
+            if v in self.label.keys():
+                command += f"label={self.label[v]},"
+            command+= f"] {{{self.display_name[v]}}};"
             AllCommand.append(command)
         
         #Loop path
-        for v in self.V :
-            command = f"\\path ({v[0]}) edge["
-            if v in self.edge_options.keys():
-                command += f"{self.edge_options[v]},"
-            command += f"{self.orientation[v]},"
-            if v in self.weight.keys():
-                command += '"' + self.weight[v] + '",'
-            if v in self.color.keys():
-                command += f"color={self.color[v]},"
-            command += f"] ({v[1]});"
+        for e in self.E :
+            command = f"\\path ({e[0]}) edge["
+            if e in self.edge_options.keys():
+                command += f"{self.edge_options[e]},"
+            command += f"{self.orientation[e]},"
+            if e in self.weight.keys():
+                command += '"' + self.weight[e] + '",'
+            if e in self.color.keys():
+                command += f"color={self.color[e]},"
+            command += f"] ({e[1]});"
             AllCommand.append(command)
         
         AllCommand.append("\\end{tikzpicture}\n")
         AllCommand = '\n'.join(AllCommand)
         
         return AllCommand
+
+
+#########################################################
+######################## GETTER #########################
+#########################################################
+
+@property
+def V(self):
+    return self.V
+
+@property
+def E(self):
+    return self.E
+
+
+#########################################################
+######################## SETTER #########################
+#########################################################
+
+@V.setter
+def V(self, new_list_V):
+    self.V = new_list_V
+
+@E.setter
+def E(self, new_list_E):
+    self.E = new_list_E
+
+
+

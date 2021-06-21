@@ -1,12 +1,17 @@
-from node import Node, Link
-
 class Graph:
-    def __init__(self,name,option_tikzpicture="", dependencies=""):
+    def __init__(self,name,tikzpicture_option="", dependencies="", E=[], V=[]):
         self.name = name
-        self.option_tikzpicture = option_tikzpicture
+        self.tikzpicture_option = tikzpicture_option
         self.dependencies = dependencies
-        self.allNodes = []
-        self.allLinks = []
+        self.E = E
+        self.fill = {}
+        self.label = {}
+        self.node_options = {}
+        self.V = V
+        self.weight = {}
+        self.orientation = {}
+        self.color = {}
+        self.edge_options = {}
 
     def addLink(self,link):
         self.allNodes.append(link.node1)

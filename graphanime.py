@@ -101,7 +101,7 @@ def Dijkstra(Graph,source,sink):
 
 def genpdf(anim,file):
     
-    fOut = open(file+".tex","a")
+    fOut = open(file+".tex","w")
 
     fOut.write("\\documentclass{beamer} \n")
     fOut.write( anim[0].dependencies + "\n")
@@ -123,5 +123,5 @@ if __name__ == "__main__":
 
     A = [load('LaTeX/Text.tex'), load('LaTeX/Text.tex')]
 
-    genpdf(A,"LaTex/first")
+    genpdf(A,"LaTeX/first")
 

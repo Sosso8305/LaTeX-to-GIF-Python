@@ -97,7 +97,7 @@ def load(file):
 
             options = ",".join(options)
             
-            G.addLink(Link(globals()[str_node1],globals()[str_node2],weight,edge,color,options))
+            G.addOnlyLink(Link(globals()[str_node1],globals()[str_node2],weight,edge,color,options))
 
     return G
 

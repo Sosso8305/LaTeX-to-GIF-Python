@@ -5,20 +5,19 @@ class Graph:
         self.name = name
         self.option_tikzpicture = option_tikzpicture
         self.dependencies = dependencies
-        self.allNodes = set() #mathematical set for don't have twice times one node
-                                #set are not ordered : graphs may change each frame
+        self.allNodes = []
         self.allLinks = []
 
     def addLink(self,link):
-        self.allNodes.add(link.node1) #pourquoi ?
-        self.allNodes.add(link.node2) #pourquoi ?
+        self.allNodes.append(link.node1)
+        self.allNodes.append(link.node2)
         self.allLinks.append(link)
 
     def addOnlyLink(self,link):
         self.allLinks.append(link)
 
     def addNode(self,node):
-        self.allNodes.add(node)
+        self.allNodes.append(node)
 
     def copyTo(self):
         from copy import deepcopy

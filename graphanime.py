@@ -36,29 +36,27 @@ def load(file):
 
     for command in AllCommand:
 
-        command= ''.join(command.split()) # Removes spaces 
-        #WIP some options may need spaces?
-
+        command= ''.join(command.split('\n'))
 
         if command.find("\\node") != -1:
             options = command[(command.find("[")+1):command.find("]")]
             options = options.split(',')
 
-            opt_del=[]
             fill ="" 
             label ="" 
+            other_options=[]
             for opt in options:
                 if opt.find("fill") != -1:
+                    opt=''.join(opt.split())
                     fill = opt[5:]
-                    opt_del.append(opt)
 
                 elif opt.find("label") != -1:
+                    opt=''.join(opt.split())
                     label = opt[6:]
-                    opt_del.append(opt)
+                else:
+                    other_options.append(opt)
 
-            options = [x for x in options if x not in opt_del]
-
-            options = ",".join(options)
+            options = ",".join(other_options)
             
             str_node = command[(command.find("(")+1):command.find(")")] 
             globals()[str_node]= Node(command[(command.find("{")+1):command.find("}")],fill,label,options)
@@ -77,25 +75,23 @@ def load(file):
             options = command[(command.find("[")+1):command.find("]")]
             options = options.split(',')
 
-            opt_del=[]
+            other_options=[]
             color="" 
             weight='1'
             for opt in options:
                 if opt.find("-") != -1:
+                    opt=''.join(opt.split())
                     edge = (opt.find("--") != -1)
-                    opt_del.append(opt)
 
                 elif opt.find("color") != -1:
+                    opt=''.join(opt.split())
                     color = opt[6:]
-                    opt_del.append(opt)
 
                 elif opt.find('"') != -1:
+                    opt=''.join(opt.split())
                     weight = opt[1:-1]
-                    opt_del.append(opt)
 
-            options = [x for x in options if x not in opt_del]
-
-            options = ",".join(options)
+            options = ",".join(other_options)
             
             G.addOnlyLink(Link(globals()[str_node1],globals()[str_node2],weight,edge,color,options))
 

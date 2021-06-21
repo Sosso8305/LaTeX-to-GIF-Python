@@ -99,6 +99,11 @@ def load(file):
             
             G.addOnlyLink(Link(globals()[str_node1],globals()[str_node2],weight,edge,color,options))
 
+
+    #add all successor for each node
+    for link in G.allLinks:
+           link.node1.addSuccessor(link.node2) 
+
     return G
 
 

@@ -6,13 +6,14 @@ class Node:
         Args:
             name (string): name or numbers
             color (string): color of node
-            label (string): annatotion side of node
+            label (string): annotation side of node
             options(string): all options useless
         """
         self.name = name
         self.color = color
         self.label = label
         self.successor = []
+        self.predecessor = []
         self.options = options
 
     def addSuccessor(self,node):

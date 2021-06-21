@@ -24,6 +24,11 @@ class Graph:
         from copy import deepcopy
         return deepcopy(self)
 
+    def getLink(self, n1, n2):
+        for link in self.allLinks:
+            if (link.node1 is n1) and (link.node2 is n2):
+                return link
+
     def writeLaTeX(self):
         AllCommand = []
         AllCommand.append(f"\\begin{{tikzpicture}} [{self.option_tikzpicture}]")

@@ -1,5 +1,12 @@
+from heapq import heappop, heappush
 from graph import Graph
 from node import Node, Link
+
+# Define constants as in pseudo-code
+WHITE = (255, 255, 255)
+GREY = (128, 128, 128)
+BLACK = (0, 0, 0)
+INFINI = 1000000
 
 def load(file):
     fileTex = open(file,"r")
@@ -97,6 +104,27 @@ def load(file):
 
 def Dijkstra(Graph,source,sink):
     print("TODO")
+    relative_distance = 0
+    distance_from_source = 0
+    priority_queue = []
+    for s in Graph.allNodes:
+        s.color = WHITE
+        s.label = str(INFINI) # Il me faut un nombre assez grand pour simuler l'infini
+    heappush(priority_queue, (source, 0)) # Je mets dans ma file de priorités un tuple avec le noeud source et la valeur 0 (car distance de source à source = 0)
+    source.couleur = GREY
+    source.label = str(0) # Le label tel que défini dans la classe Node contient la distance depuis le noeud source
+    while(priority_queue):
+        (noeud, distance_from_source) = heappop(priority_queue)
+        noeud.couleur = GREY
+        for s in noeud.successors:
+            lien = Graph.getLink(noeud, s) # Obtient le lien entre le noeud actuellement étudié et son voisin
+            if distance_from_source + lien.weight < int(s.label): # Comme le label est un string, il faut le passer en int
+                s.label = str(distance_from_source + lien.weight)
+                s.predecessors.append(noeud)
+                heappush(priority_queue, (s, int(s.label)))
+        noeud.couleur = BLACK
+
+
 
 
 def genpdf(anim,file):

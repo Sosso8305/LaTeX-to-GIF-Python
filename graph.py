@@ -13,6 +13,7 @@ class Graph:
         self.label = defaultdict(lambda: '')
         self.node_options = defaultdict(lambda: '')
         self.display_name = defaultdict(lambda: '')
+        self.coordonnee = defaultdict(lambda: '')
 
         #option out for E
         self.orientation = orientation
@@ -20,12 +21,13 @@ class Graph:
         self.color = defaultdict(lambda: '')
         self.edge_options = defaultdict(lambda: '')
 
-    def add_node(self,id, display_name, fill='', label='', node_options=''):
+    def add_node(self,id, display_name, fill='', label='', node_options='', coordonnee=()):
         self.V.append(id)
         self.display_name[id] = display_name
         if fill: self.fill[id]=fill
         if label: self.label[id]=label
         if node_options: self.node_options[id]=node_options
+        if coordonnee: self.coordonnee[id]=coordonnee
 
     def add_link(self, edge, orientation, weight='', color='', edge_options=''):
         if not edge[0] in self.V: self.V.append(edge[0])
@@ -47,7 +49,10 @@ class Graph:
         #Loop node
         AllCommand.append(f"\\node at (-4,-4) (cornerdiapo1) [text=white] {{cornerdiapo1}};\n\\node at (6,5) (cornerdiapo2) [text=white] {{cornerdiapo2}};")
         for v in self.V :
-            command = f"\\node ({v}) ["
+            command = f"\\node ({v}) "
+            if v in self.coordonnee.keys():
+                command += f"at({self.coordonnee[v][0]},{self.coordonnee[v][1]}) ["
+            else: command += "["
             if v in self.node_options.keys():
                 command += self.node_options[v] + ','
             if v in self.fill.keys():

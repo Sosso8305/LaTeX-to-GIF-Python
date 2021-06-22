@@ -59,9 +59,13 @@ def load(file):
             options = ",".join(other_options)
 
             id = command[(command.find("(")+1):command.find(")")]
-            name = command[(command.rfind("{")+1):command.rfind("}")] 
+            name = command[(command.rfind("{")+1):command.rfind("}")]
 
-            G.add_node(id, name, fill=fill, label=label, node_options=options)
+            coordonnee = ()
+            if command.find("at(") != -1: 
+                coordonnee = command[command.find("at(")+3:command.find("at(")+command[command.find("at("):].find(")")]
+                coordonnee = coordonnee.split(',')
+            G.add_node(id, name, fill=fill, label=label, node_options=options, coordonnee=coordonnee)
 
         elif command.find("\\path") != -1:
             command = command.splitlines()
@@ -169,9 +173,10 @@ def genpdf(anim,file):
     fOut.write("\\end{document}")
 
     fOut.close()
-
-    pdfl = PDFLaTeX.from_texfile(file+".tex")
-    pdf, log, completed_process = pdfl.create_pdf(keep_pdf_file=True, keep_log_file=False)
+    
+    #x = PDFLaTeX("C:\\Users\\gaeth\\AppData\\Local\\Programs\\MiKTeX\\miktex\\bin\\x64\\pdflatex.exe", 'first')
+    #pdfl = PDFLaTeX.from_texfile("first.tex")
+    #pdf, log, completed_process = pdfl.create_pdf(keep_pdf_file=True, keep_log_file=False)
 
     os.chdir("../")
 

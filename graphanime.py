@@ -161,7 +161,7 @@ def genpdf(anim,file):
 
     fOut.write("\\documentclass{beamer} \n")
     fOut.write( anim[0].preambule + "\n")
-    fOut.write("\\tikzset{%https://tex.stackexchange.com/questions/49888/tikzpicture-alignment-and-centering\n")
+    fOut.write("\\tikzset{%https://tex.stackexchange.com/questions/49888/tikzpicture-alignment-and-centering\n") #source
     fOut.write("master/.style={\nexecute at end picture={\n\coordinate (lower right) at (current bounding box.south east);\n\coordinate (upper left) at (current bounding box.north west);}},")
     fOut.write("slave/.style={\nexecute at end picture={\n\pgfresetboundingbox\n\path (upper left) rectangle (lower right);}}}\n")
 
@@ -170,6 +170,7 @@ def genpdf(anim,file):
     first=True
     for G in anim:
         fOut.write("\\begin{frame} \n")
+        fOut.write("\\centering\n")
         fOut.write("\\begin{tikzpicture} ")
         if first:
              fOut.write("[master]\n")

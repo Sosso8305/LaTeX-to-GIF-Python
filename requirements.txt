@@ -1,2 +1,1 @@
 virtualenv==20.2.2
-pdflatex==0.1.3

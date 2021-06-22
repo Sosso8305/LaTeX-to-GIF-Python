@@ -1,6 +1,5 @@
 from heapq import heappop, heappush
 from graph import Graph
-from pdflatex import PDFLaTeX
 import os, platform, subprocess
 
 # Define constants as in pseudo-code
@@ -105,28 +104,28 @@ def Dijkstra(Graph,source,sink):
     distance_from_source = 0
     priority_queue = []
     for s in Graph_copy.allNodes:
-        s.color = WHITE
-        s.label = INFINI # Il me faut un nombre assez grand pour simuler l'infini
+        Graph_copy.fill[s] = WHITE
+        Graph_copy.label[s] = INFINI
     heappush(priority_queue, (source, 0)) # Je mets dans ma file de priorités un tuple avec le noeud source et la valeur 0 (car distance de source à source = 0)
-    source.label = str(0) # Le label tel que défini dans la classe Node contient la distance depuis le noeud source
+    Graph_copy.label[source] = str(0) # Le label tel que défini dans la classe Node contient la distance depuis le noeud source
     liste_graphes.append(Graph_copy.copyTo())
-    source.couleur = GREY
+    Graph_copy.fill[source] = GREY
     liste_graphes.append(Graph_copy.copyTo())
 
     while(priority_queue):
         (noeud, distance_from_source) = heappop(priority_queue)
-        noeud.couleur = GREY
+        Graph_copy.fill[noeud] = GREY
         liste_graphes.append(Graph_copy.copyTo())
         
-        for s in noeud.successors:
-            lien = Graph_copy.getLink(noeud, s) # Obtient le lien entre le noeud actuellement étudié et son voisin
-            lien.color = ORANGE
-            liste_graphes.append(Graph_copy.copyTo())
-            if (s.label == INFINI) or (distance_from_source + lien.weight < int(s.label)): # Comme le label est un string, il faut le passer en int
-                s.label = str(distance_from_source + lien.weight)
+        for e in Graph.E:
+            if (noeud is e[0]) or (noeud is e[1] and Graph_copy.orientation):
+                Graph_copy.color[e] = ORANGE
                 liste_graphes.append(Graph_copy.copyTo())
-                s.predecessors.append(noeud)
-                heappush(priority_queue, (s, int(s.label)))
+                if (Graph_copy.label[noeud] == INFINI) or (distance_from_source + lien.weight < int(s.label)): # Comme le label est un string, il faut le passer en int
+                    s.label = str(distance_from_source + lien.weight)
+                    liste_graphes.append(Graph_copy.copyTo())
+                    s.predecessors.append(noeud)
+                    heappush(priority_queue, (s, int(s.label)))
         noeud.couleur = BLACK
         liste_graphes.append(Graph_copy.copyTo())
     
@@ -156,7 +155,7 @@ def FunctTest(Graph):
 
 def genpdf(anim,file):
 
-    #Python to LaTeX
+    ######Python to LaTeX######
     if not os.path.exists("./out/"):
         os.mkdir("./out/")
     os.chdir("./out/")
@@ -176,34 +175,21 @@ def genpdf(anim,file):
 
     fOut.close()
     
-    ######LaTeX to PDF
+    ######LaTeX to PDF######
     
     # TeX source filename
     tex_filename = file + '.tex'
-    filename, ext = os.path.splitext(tex_filename)
     # the corresponding PDF filename
     pdf_filename = file + '.pdf'
 
     # compile TeX file
-    subprocess.run(['pdflatex', '-interaction=nonstopmode', tex_filename])
+    subprocess.run(['pdflatex', '-interaction=batchmode','-shell-escape', tex_filename])
 
     # check if PDF is successfully generated
     if not os.path.exists(pdf_filename):
         raise RuntimeError('PDF output not found')
 
-    # open PDF with platform-specific command
-    if platform.system().lower() == 'darwin':
-        subprocess.run(['open', pdf_filename])
-    elif platform.system().lower() == 'windows':
-        os.startfile(pdf_filename)
-    elif platform.system().lower() == 'linux':
-        subprocess.run(['xdg-open', pdf_filename])
-    else:
-        raise RuntimeError('Unknown operating system "{}"'.format(platform.system()))
 
-    """pdfl = PDFLaTeX.from_texfile("first.tex")
-    pdf, log, completed_process = pdfl.create_pdf(keep_pdf_file=True, keep_log_file=False)
-    """
     os.chdir("../")
 
 

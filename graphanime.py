@@ -1,7 +1,7 @@
 from heapq import heappop, heappush
 from graph import Graph
 from pdflatex import PDFLaTeX
-import os
+import os, platform, subprocess
 
 # Define constants as in pseudo-code
 WHITE = (255, 255, 255)
@@ -155,6 +155,8 @@ def FunctTest(Graph):
 
 
 def genpdf(anim,file):
+
+    #Python to LaTeX
     if not os.path.exists("./out/"):
         os.mkdir("./out/")
     os.chdir("./out/")
@@ -174,11 +176,34 @@ def genpdf(anim,file):
 
     fOut.close()
     
-    #x = PDFLaTeX("C:\\Users\\gaeth\\AppData\\Local\\Programs\\MiKTeX\\miktex\\bin\\x64\\pdflatex.exe", 'first')
-    #pdfl = PDFLaTeX.from_texfile("first.tex")
-    #pdf, log, completed_process = pdfl.create_pdf(keep_pdf_file=True, keep_log_file=False)
+    ######LaTeX to PDF
+    
+    # TeX source filename
+    tex_filename = file + '.tex'
+    filename, ext = os.path.splitext(tex_filename)
+    # the corresponding PDF filename
+    pdf_filename = file + '.pdf'
 
-    os.chdir("../")
+    # compile TeX file
+    subprocess.run(['pdflatex', '-interaction=nonstopmode', tex_filename])
+
+    # check if PDF is successfully generated
+    if not os.path.exists(pdf_filename):
+        raise RuntimeError('PDF output not found')
+
+    # open PDF with platform-specific command
+    if platform.system().lower() == 'darwin':
+        subprocess.run(['open', pdf_filename])
+    elif platform.system().lower() == 'windows':
+        os.startfile(pdf_filename)
+    elif platform.system().lower() == 'linux':
+        subprocess.run(['xdg-open', pdf_filename])
+    else:
+        raise RuntimeError('Unknown operating system "{}"'.format(platform.system()))
+
+    """pdfl = PDFLaTeX.from_texfile("first.tex")
+    pdf, log, completed_process = pdfl.create_pdf(keep_pdf_file=True, keep_log_file=False)
+    os.chdir("../")"""
 
 
 if __name__ == "__main__":

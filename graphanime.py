@@ -1,6 +1,6 @@
 from heapq import heappop, heappush
 from graph import Graph
-import os, platform, subprocess
+import os, platform, subprocess, tempfile
 
 # Define constants as in pseudo-code
 WHITE = (255, 255, 255)
@@ -150,56 +150,66 @@ def FunctTest(Graph):
 
 
 
-def genpdf(anim,file):
+def gen_beamer(anim,file):
 
     ######Python to LaTeX######
     if not os.path.exists("./out/"):
         os.mkdir("./out/")
     os.chdir("./out/")
+
+    current_dir = os.getcwd();
+
+    with tempfile.TemporaryDirectory() as tempdir:
+     
+        os.chdir(tempdir)
+        fOut = open(file+".tex","w")
+        
+        fOut.write("\\documentclass{beamer} \n")
+        fOut.write( anim[0].preambule + "\n")
+        fOut.write("\\tikzset{%https://tex.stackexchange.com/questions/49888/tikzpicture-alignment-and-centering\n") #source
+        fOut.write("master/.style={\nexecute at end picture={\n\coordinate (lower right) at (current bounding box.south east);\n\coordinate (upper left) at (current bounding box.north west);}},")
+        fOut.write("slave/.style={\nexecute at end picture={\n\pgfresetboundingbox\n\path (upper left) rectangle (lower right);}}}\n")
+
+        fOut.write("\\begin{document} \n")
+
+        first=True
+        for G in anim:
+            fOut.write("\\begin{frame} \n")
+            fOut.write("\\centering\n")
+            fOut.write("\\begin{tikzpicture} ")
+            if first:
+                fOut.write("[master]\n")
+                first=False
+            else: fOut.write("[slave]\n")
+            fOut.write(G.writeLaTeX())
+            fOut.write("\\end{tikzpicture} \n")
+            fOut.write("\\end{frame} \n")
+        
+        fOut.write("\\end{document}")
+
+        fOut.close()
     
-    fOut = open(file+".tex","w")
+        ######LaTeX to PDF######
+        
+        # TeX source filename
+        tex_filename = os.path.join(tempdir,file+".tex")
+        # the corresponding PDF filename
+        pdf_filename = os.path.join(tempdir,file+".pdf")
 
-    fOut.write("\\documentclass{beamer} \n")
-    fOut.write( anim[0].preambule + "\n")
-    fOut.write("\\tikzset{%https://tex.stackexchange.com/questions/49888/tikzpicture-alignment-and-centering\n") #source
-    fOut.write("master/.style={\nexecute at end picture={\n\coordinate (lower right) at (current bounding box.south east);\n\coordinate (upper left) at (current bounding box.north west);}},")
-    fOut.write("slave/.style={\nexecute at end picture={\n\pgfresetboundingbox\n\path (upper left) rectangle (lower right);}}}\n")
+        # compile TeX file
+        subprocess.run(['pdflatex', '-interaction=batchmode', tex_filename])
 
-    fOut.write("\\begin{document} \n")
+        os.chdir(current_dir)
 
-    first=True
-    for G in anim:
-        fOut.write("\\begin{frame} \n")
-        fOut.write("\\centering\n")
-        fOut.write("\\begin{tikzpicture} ")
-        if first:
-             fOut.write("[master]\n")
-             first=False
-        else: fOut.write("[slave]\n")
-        fOut.write(G.writeLaTeX())
-        fOut.write("\\end{tikzpicture} \n")
-        fOut.write("\\end{frame} \n")
+        # check if PDF is successfully generated
+        if os.path.exists(pdf_filename):
+            subprocess.run(['cp', pdf_filename, file+".pdf"])
+        else:
+            raise RuntimeError('PDF output not found')
+
+
+        os.chdir("../")
     
-    fOut.write("\\end{document}")
-
-    fOut.close()
-    
-    ######LaTeX to PDF######
-    
-    # TeX source filename
-    tex_filename = file + '.tex'
-    # the corresponding PDF filename
-    pdf_filename = file + '.pdf'
-
-    # compile TeX file
-    subprocess.run(['pdflatex', '-interaction=batchmode','-shell-escape', tex_filename])
-
-    # check if PDF is successfully generated
-    if not os.path.exists(pdf_filename):
-        raise RuntimeError('PDF output not found')
-
-
-    os.chdir("../")
 
 
 if __name__ == "__main__":
@@ -208,5 +218,5 @@ if __name__ == "__main__":
     FunctTest(x)
     A = [load('LaTeX/Text.tex'), x]
 
-    genpdf(A,"first")
+    gen_beamer(A,"first")
 

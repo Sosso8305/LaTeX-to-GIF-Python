@@ -203,7 +203,8 @@ def genpdf(anim,file):
 
     """pdfl = PDFLaTeX.from_texfile("first.tex")
     pdf, log, completed_process = pdfl.create_pdf(keep_pdf_file=True, keep_log_file=False)
-    os.chdir("../")"""
+    """
+    os.chdir("../")
 
 
 if __name__ == "__main__":

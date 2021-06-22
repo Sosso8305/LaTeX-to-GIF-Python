@@ -1,11 +1,10 @@
 from collections import defaultdict
 class Graph:
-    def __init__(self,name,V, E, orientation, tikzpicture_option="", preambule=""):
+    def __init__(self,name,V, E, orientation, preambule=""):
         self.name = name
         self.V = V
         self.E = E
 
-        self.tikzpicture_option = tikzpicture_option
         self.preambule =preambule
 
         #option out for V
@@ -44,10 +43,8 @@ class Graph:
 
     def writeLaTeX(self):
         AllCommand = []
-        AllCommand.append(f"\\begin{{tikzpicture}} [{self.tikzpicture_option}]")
         
         #Loop node
-        AllCommand.append(f"\\node at (-4,-4) (cornerdiapo1) [text=white] {{cornerdiapo1}};\n\\node at (6,5) (cornerdiapo2) [text=white] {{cornerdiapo2}};")
         for v in self.V :
             command = f"\\node ({v}) "
             if v in self.coordonnee.keys():
@@ -75,7 +72,6 @@ class Graph:
             command += f"] ({e[1]});"
             AllCommand.append(command)
         
-        AllCommand.append("\\end{tikzpicture}\n")
         AllCommand = '\n'.join(AllCommand)
         
         return AllCommand

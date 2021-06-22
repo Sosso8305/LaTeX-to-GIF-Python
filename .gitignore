@@ -9,3 +9,5 @@ LaTeX/*
 
 #compile file python
 __pycache__/*
+
+out/*

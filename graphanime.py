@@ -28,12 +28,9 @@ def load(file):
 
     # Get the uspackage&uselibrary lines
     preambule = allText[allText.find("\\documentclass[tikz]{standalone}")+len('\documentclass[tikz]{standalone}'):allText.find("\\begin{document}")]
-    AllCommand  = allText[allText.find("\\begin{tikzpicture}"):allText.find("\\end{tikzpicture}")]
-    end_option_tikzpicture = AllCommand.find("]")
-    option_tikzpicture = AllCommand[AllCommand.find("[")+1:end_option_tikzpicture]
-    AllCommand = AllCommand[(end_option_tikzpicture+1):]
+    AllCommand  = allText[allText.find("\\begin{tikzpicture}") + len("\\begin{tikzpicture}"):allText.find("\\end{tikzpicture}")]
     
-    G= Graph("G", [], [], {}, option_tikzpicture, preambule)
+    G= Graph("G", [], [], {}, preambule)
 
     AllCommand = AllCommand.split(';')
     for command in AllCommand:
@@ -164,11 +161,22 @@ def genpdf(anim,file):
 
     fOut.write("\\documentclass{beamer} \n")
     fOut.write( anim[0].preambule + "\n")
+    fOut.write("\\tikzset{%https://tex.stackexchange.com/questions/49888/tikzpicture-alignment-and-centering\n")
+    fOut.write("master/.style={\nexecute at end picture={\n\coordinate (lower right) at (current bounding box.south east);\n\coordinate (upper left) at (current bounding box.north west);}},")
+    fOut.write("slave/.style={\nexecute at end picture={\n\pgfresetboundingbox\n\path (upper left) rectangle (lower right);}}}\n")
+
     fOut.write("\\begin{document} \n")
 
+    first=True
     for G in anim:
         fOut.write("\\begin{frame} \n")
+        fOut.write("\\begin{tikzpicture} ")
+        if first:
+             fOut.write("[master]\n")
+             first=False
+        else: fOut.write("[slave]\n")
         fOut.write(G.writeLaTeX())
+        fOut.write("\\end{tikzpicture} \n")
         fOut.write("\\end{frame} \n")
     
     fOut.write("\\end{document}")

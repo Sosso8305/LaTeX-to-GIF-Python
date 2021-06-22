@@ -4,6 +4,9 @@
 #file of LaTeX
 LaTeX/*
 
+#out file of LaTeX
+out/*
+
 # setting of VScode
 .vscode/*
 

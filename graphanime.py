@@ -205,7 +205,7 @@ def gen_pdf(anim,file,out_tex=False):
         for G in anim:
             
             fOut.write("\\centering\n")
-            fOut.write("\\begin{tikzpicture} ")
+            fOut.write("\\begin{tikzpicture} [every edge quotes/.append style={font=\scriptsize, inner xsep=.1mm, inner ysep=.2mm}]")
             fOut.write(G.writeLaTeX())
             fOut.write("\\end{tikzpicture} \n")
            

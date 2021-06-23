@@ -274,9 +274,8 @@ def gen_gif(anim,file):
         frames = []
         images = glob.glob("*.png")
 
-
         images= sorted(images, key= lambda x: key_sort(x,file))
-        print(images)
+
         
         for img in images:
             new_frame =Image.open(img)
@@ -287,7 +286,8 @@ def gen_gif(anim,file):
 
         # the corresponding GIF filename
         gif_filename = os.path.join(tempdir,file+".gif")
-        subprocess.run(['ls', '-l'])
+
+
         os.chdir(current_dir)
 
 

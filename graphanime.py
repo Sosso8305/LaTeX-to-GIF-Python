@@ -203,9 +203,19 @@ def gen_beamer(anim,file,out_tex=False):
 
         # check if PDF is successfully generated
         if os.path.exists(pdf_filename):
-            subprocess.run(['cp', pdf_filename, file+".pdf"])
-            if(out_tex):
-                subprocess.run(['cp', tex_filename, file+".tex"])
+            if (platform.system()=='Windows'):
+                os.system('copy ' + pdf_filename + ' "' +current_dir + '\\"')
+                if(out_tex):
+                    os.system('copy ' + tex_filename + ' "' +current_dir + '\\"')
+
+            elif(platform.system()=='Linux'or'Darwin'):
+                subprocess.run(['cp', pdf_filename, file+".pdf"])
+                if(out_tex):
+                    subprocess.run(['cp', tex_filename, file+".tex"])
+
+            else:
+                print("Don't have a right system")
+
         else:
             raise RuntimeError('PDF output not found')
 
@@ -260,9 +270,19 @@ def gen_pdf(anim,file,out_tex=False):
 
         # check if PDF is successfully generated
         if os.path.exists(pdf_filename):
-            subprocess.run(['cp', pdf_filename, file+".pdf"])
-            if(out_tex):
-                subprocess.run(['cp', tex_filename, file+".tex"])
+            if (platform.system()=='Windows'):
+                os.system('copy ' + pdf_filename + ' "' +current_dir + '\\"')
+                if(out_tex):
+                    os.system('copy ' + tex_filename + ' "' +current_dir + '\\"')
+
+            elif(platform.system()=='Linux'or'Darwin'):
+                subprocess.run(['cp', pdf_filename, file+".pdf"])
+                if(out_tex):
+                    subprocess.run(['cp', tex_filename, file+".tex"])
+
+            else:
+                print("Don't have a right system")
+
         else:
             raise RuntimeError('PDF output not found')
 

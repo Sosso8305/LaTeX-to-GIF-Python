@@ -1,8 +1,8 @@
 from graph import Graph
 from pdf2image import convert_from_path
+from apng import APNG
 from PIL import Image
-import glob
-import os, platform, subprocess, tempfile
+import os, platform, subprocess, tempfile, glob, shutil
 
 
 ############Begin_Parser##################
@@ -155,18 +155,7 @@ def gen_beamer(anim,file,out_tex=False):
 
         os.chdir(current_dir)
         if os.path.exists(pdf_filename):
-            if (platform.system()=='Windows'):
-                os.system('copy ' + pdf_filename + ' "' +current_dir + '\\"')
-                if(out_tex):
-                    os.system('copy ' + tex_filename + ' "' +current_dir + '\\"')
-
-            elif(platform.system()=='Linux'or'Darwin'):
-                subprocess.run(['cp', pdf_filename, file+".pdf"])
-                if(out_tex):
-                    subprocess.run(['cp', tex_filename, file+".tex"])
-
-            else:
-                print("Don't have a right system")
+            shutil.copy2(pdf_filename,current_dir)
 
         else:
             raise RuntimeError('PDF output not found')
@@ -221,18 +210,7 @@ def gen_pdf(anim,file,out_tex=False):
 
         # check if PDF is successfully generated
         if os.path.exists(pdf_filename):
-            if (platform.system()=='Windows'):
-                os.system('copy ' + pdf_filename + ' "' +current_dir + '\\"')
-                if(out_tex):
-                    os.system('copy ' + tex_filename + ' "' +current_dir + '\\"')
-
-            elif(platform.system()=='Linux'or'Darwin'):
-                subprocess.run(['cp', pdf_filename, file+".pdf"])
-                if(out_tex):
-                    subprocess.run(['cp', tex_filename, file+".tex"])
-
-            else:
-                print("Don't have a right system")
+            shutil.copy2(pdf_filename,current_dir)
 
         else:
             raise RuntimeError('PDF output not found')
@@ -245,8 +223,8 @@ def key_sort(word,file):
     return int(word[len(file)+1:-4])
 
 
-def gen_gif(anim,file):
-
+def gen_gif(anim,file,duration=500):
+    
     if not os.path.exists("./out/"):
         os.mkdir("./out/")
     os.chdir("./out/")    
@@ -274,7 +252,7 @@ def gen_gif(anim,file):
             new_frame =Image.open(img)
             frames.append(new_frame)
 
-        frames[0].save(file+".gif",format='GIF',append_images=frames[1:],save_all=True,duration=500,loop=0)
+        frames[0].save(file+".gif",format='GIF',append_images=frames[1:],save_all=True,duration=duration,loop=0)
     
 
         # the corresponding GIF filename
@@ -285,22 +263,54 @@ def gen_gif(anim,file):
 
 
         if os.path.exists(gif_filename):
-            if (platform.system()=='Windows'):
-                os.system('copy ' + gif_filename + ' "' +current_dir + '\\"')
-
-            elif(platform.system()=='Linux'or'Darwin'):
-                subprocess.run(['cp', gif_filename, file+".gif"])
-                
-            else:
-                print("Don't have a right system")
-
-        else:
-            raise RuntimeError('GIF output not found')
+            shutil.copy2(gif_filename,current_dir)
 
 
         os.chdir("../")
         
 
+def gen_apng(anim,file,delay=500):
+    
+    if not os.path.exists("./out/"):
+        os.mkdir("./out/")
+    os.chdir("./out/")    
+
+    current_dir = os.getcwd()
+
+    with tempfile.TemporaryDirectory() as tempdir:
+        os.chdir(tempdir)
+        gen_pdf(anim, file)
+        
+        pages = convert_from_path("./out/"+ file +".pdf")
+
+        nb = 0
+        for page in pages:
+            nb+=1
+            page.save(file+'_'+str(nb)+".png",'PNG')
+
+        
+        images = glob.glob("*.png")
+
+        images= sorted(images, key= lambda x: key_sort(x,file))
+
+        
+        APNG.from_files(images,delay=delay).save(file+".png")
+    
+
+        # the corresponding GIF filename
+        apng_filename = os.path.join(tempdir,file+".png")
+
+
+        os.chdir(current_dir)
+
+
+        if os.path.exists(apng_filename):
+            shutil.copy2(apng_filename,current_dir)
+        else:
+            raise RuntimeError('APNG output not found')
+
+
+        os.chdir("../")
 
 
             

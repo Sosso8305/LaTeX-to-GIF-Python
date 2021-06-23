@@ -118,15 +118,16 @@ def Dijkstra(Graph,source,sink):
             if (noeud is e[0]) or (noeud is e[1] and Graph_copy.orientation):
                 Graph_copy.color[e] = ORANGE
                 liste_graphes.append(Graph_copy.copyTo())
-                if (Graph_copy.label[noeud] == INFINI) or (distance_from_source + lien.weight < int(s.label)): # Comme le label est un string, il faut le passer en int
-                    s.label = str(distance_from_source + lien.weight)
+                if noeud is e[0]:
+                    voisin = e[1]
+                else:
+                    voisin = e[0]
+                if (Graph_copy.label[voisin] == INFINI) or (distance_from_source + Graph_copy.weight[e] < int(Graph_copy.label[voisin])): # Comme le label est un string, il faut le passer en int
+                    Graph_copy.label[voisin] = str(distance_from_source + Graph_copy.weight[e])
                     liste_graphes.append(Graph_copy.copyTo())
-                    s.predecessors.append(noeud)
-                    heappush(priority_queue, (s, int(s.label)))
+                    heappush(priority_queue, (voisin, int(Graph_copy.label[voisin])))
         noeud.couleur = BLACK
         liste_graphes.append(Graph_copy.copyTo())
-    
-    return liste_graphes
 
 def FunctTest(Graph):
     i = 0

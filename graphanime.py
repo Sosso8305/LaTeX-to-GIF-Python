@@ -170,13 +170,6 @@ def gen_beamer(anim,file,out_tex=False):
 
         else:
             raise RuntimeError('PDF output not found')
-        # check if PDF is successfully generated
-        # 
-        #     subprocess.run(['copy', pdf_filename, current_dir + '\\'])
-        #     if(out_tex):
-        #         subprocess.run(['copy', tex_filename, current_dir + '\\'])
-        # 
-
 
         os.chdir("../")
 
@@ -205,7 +198,7 @@ def gen_pdf(anim,file,out_tex=False):
         for G in anim:
             
             fOut.write("\\centering\n")
-            fOut.write("\\begin{tikzpicture} [every edge quotes/.append style={font=\scriptsize, inner xsep=.1mm, inner ysep=.2mm}]")
+            fOut.write("\\begin{tikzpicture}\n")
             fOut.write(G.writeLaTeX())
             fOut.write("\\end{tikzpicture} \n")
            

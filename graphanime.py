@@ -1,4 +1,7 @@
 from graph import Graph
+from pdf2image import convert_from_path
+from PIL import Image
+import glob
 import os, platform, subprocess, tempfile
 
 
@@ -243,6 +246,72 @@ def gen_pdf(anim,file,out_tex=False):
 
 
         os.chdir("../")
+
+
+def key_sort(word,file):
+    return int(word[len(file)+1:-4])
+
+
+def gen_gif(anim,file):
+
+    if not os.path.exists("./out/"):
+        os.mkdir("./out/")
+    os.chdir("./out/")    
+
+    current_dir = os.getcwd()
+
+    with tempfile.TemporaryDirectory() as tempdir:
+        os.chdir(tempdir)
+        gen_pdf(anim, file)
+        
+        pages = convert_from_path("./out/"+ file +".pdf")
+
+        nb = 0
+        for page in pages:
+            nb+=1
+            page.save(file+'_'+str(nb)+".png",'PNG')
+
+        frames = []
+        images = glob.glob("*.png")
+
+
+        images= sorted(images, key= lambda x: key_sort(x,file))
+        print(images)
+        
+        for img in images:
+            new_frame =Image.open(img)
+            frames.append(new_frame)
+
+        frames[0].save(file+".gif",format='GIF',append_images=frames[1:],save_all=True,duration=500,loop=0)
+    
+
+        # the corresponding GIF filename
+        gif_filename = os.path.join(tempdir,file+".gif")
+        subprocess.run(['ls', '-l'])
+        os.chdir(current_dir)
+
+
+        if os.path.exists(gif_filename):
+            if (platform.system()=='Windows'):
+                os.system('copy ' + gif_filename + ' "' +current_dir + '\\"')
+
+            elif(platform.system()=='Linux'or'Darwin'):
+                subprocess.run(['cp', gif_filename, file+".gif"])
+                
+            else:
+                print("Don't have a right system")
+
+        else:
+            raise RuntimeError('GIF output not found')
+
+
+        os.chdir("../")
+        
+
+
+
+            
+
     
 
 #############END_Back-end###################

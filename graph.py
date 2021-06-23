@@ -38,8 +38,20 @@ class Graph:
         if edge_options: self.edge_options[edge]= edge_options
 
     def copy(self):
-        from copy import deepcopy
-        return deepcopy(self)
+        from copy import copy
+        g = Graph(self.name, self.V.copy(), self.E.copy())
+        g.preambule = self.preambule.copy()
+        g.fill = self.fill.copy()
+        g.label = self.label.copy()
+        g.node_options = self.node_options.copy()
+        g.display_name = self.display_name.copy()
+        g.coordonnee = self.coordonnee.copy()
+        g.orientation = self.orientation.copy()
+        g.weight = self.weight.copy()
+        g.color = self.color.copy()
+        g.edge_options = self.edge_options.copy()
+
+        return g
 
     def writeLaTeX(self):
         AllCommand = []

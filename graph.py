@@ -15,6 +15,7 @@ class Graph:
         self.coordonnee = defaultdict(lambda: '')
         self.label_color = defaultdict(lambda: '')
         self.label_position = defaultdict(lambda: '')
+        self.contour = defaultdict(lambda: '')
 
         #option out for E
         self.orientation = orientation
@@ -22,7 +23,7 @@ class Graph:
         self.color = defaultdict(lambda: '')
         self.edge_options = defaultdict(lambda: '')
 
-    def add_node(self,id, display_name, fill='', label='', node_options='', coordonnee=(), label_color='', label_position=''):
+    def add_node(self,id, display_name, fill='', label='', node_options='', coordonnee=(), label_color='', label_position='', contour=''):
         self.V.append(id)
         self.display_name[id] = display_name
         if fill: self.fill[id]=fill
@@ -31,6 +32,7 @@ class Graph:
         if coordonnee: self.coordonnee[id]=coordonnee
         if label_color: self.label_color[id]=label_color
         if label_position: self.label_position[id]=label_position
+        if contour: self.contour[id] = contour
 
     def add_link(self, edge, orientation, weight='', color='', edge_options=''):
         if not edge[0] in self.V: self.V.append(edge[0])
@@ -65,6 +67,8 @@ class Graph:
                 if v in self.label_position.keys():
                     command += f"{self.label_position[v]}"
                 command += f":{self.label[v]}}},"
+            if v in self.contour.keys():
+                command += f"draw={self.contour[v]}"
             command+= f"] {{{self.display_name[v]}}};"
             AllCommand.append(command)
         

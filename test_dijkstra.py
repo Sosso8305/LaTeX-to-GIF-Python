@@ -24,15 +24,20 @@ def Dijkstra(Graph,source,sink):
     for v in Graph_copy.V:
         Graph_copy.fill[v] = "grey!50"
         Graph_copy.label[v] = INFINI
-    heappush(priority_queue, (source, 0)) # Je mets dans ma file de priorités un tuple avec le noeud source et la valeur 0 (car distance de source à source = 0)
+    heappush(priority_queue, (0, source)) # Je mets dans ma file de priorités un tuple avec le noeud source et la valeur 0 (car distance de source à source = 0)
     Graph_copy.label[source] = str(0) # Le label tel que défini dans la classe Node contient la distance depuis le noeud source
     liste_graphes.append(Graph_copy.copy())
     Graph_copy.fill[source] = "red"
     liste_graphes.append(Graph_copy.copy())
     # print("couleur, dans le graphe, du noeud ", source, " colorie : ", Graph_copy.fill[source])
 
+    i = 0
     while(priority_queue):
-        (noeud, distance_from_source) = heappop(priority_queue)
+        for elt in priority_queue:
+            print("Boucle ", i, "\tElement de la liste : ", elt)
+        i += 1
+        (distance_from_source, noeud) = heappop(priority_queue)
+        print("Noeud sorti : ", noeud, "\tPriorite : ", distance_from_source)
         Graph_copy.fill[noeud] = "red"
         liste_graphes.append(Graph_copy.copy())
         if(noeud == sink):
@@ -61,7 +66,7 @@ def Dijkstra(Graph,source,sink):
                 if (Graph_copy.label[voisin] == INFINI) or (distance_from_source + int(Graph_copy.weight[e]) < int(Graph_copy.label[voisin])): # Comme le label est un string, il faut le passer en int
                     Graph_copy.label[voisin] = str(distance_from_source + int(Graph_copy.weight[e]))
                     liste_graphes.append(Graph_copy.copy())
-                    heappush(priority_queue, (voisin, int(Graph_copy.label[voisin])))
+                    heappush(priority_queue, (int(Graph_copy.label[voisin]), voisin))
                 
                 
         Graph_copy.fill[noeud] = "black"
@@ -70,7 +75,7 @@ def Dijkstra(Graph,source,sink):
     return liste_graphes
 
 
-mon_graphe = load('nouveau_graphe.tex')
+mon_graphe = load('Exemples/exemple_dijkstra.tex')
 # print("Graphe initial")
 # for v in range(len(mon_graphe.V)):
 #     print("Couleur du noeud ", mon_graphe.V[v], " : ", mon_graphe.fill[mon_graphe.V[v]])

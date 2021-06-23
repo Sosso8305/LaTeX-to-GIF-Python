@@ -10,4 +10,8 @@ if __name__ == "__main__":
     gen_pdf(A,"Dijkstra")
     gen_gif(A,"Dijkstra")
     gen_apng(A,"Dijkstra")
+
+    y = load("Exemples/test.tex")
+    B = [y, y]
+    gen_beamer(B, "test")
     

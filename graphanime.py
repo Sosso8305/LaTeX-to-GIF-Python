@@ -36,12 +36,13 @@ def load(file):
             label ="" 
             label_color=""
             label_position=""
+            contour=""
             other_options=[]
             for opt in options:
                 if opt.find("fill") != -1:
-                    opt=''.join(opt.split())
-                    fill = opt[5:]
-
+                    if opt.find("=") != -1:
+                        fill = " "+opt[opt.find("=")+1:]
+                    else : fill = " "
                 elif opt.find("label") != -1:
                     if opt.find("{") != -1:
                         opt=opt[opt.find("{")+1:opt.find("}")]
@@ -54,6 +55,10 @@ def load(file):
                             label_position = opt[:opt.find(":")]
                     else:
                         label=opt[opt.find("=")+1:]
+                elif opt.find("draw") != -1:
+                    if opt.find("=") != -1:
+                        contour = " "+opt[opt.find("=")+1:]
+                    else : contour = " "
                 else:
                     other_options.append(opt)
 
@@ -66,7 +71,7 @@ def load(file):
             if command.find("at(") != -1: 
                 coordonnee = command[command.find("at(")+3:command.find("at(")+command[command.find("at("):].find(")")]
                 coordonnee = coordonnee.split(',')
-            G.add_node(id, name, fill=fill, label=label, node_options=options, coordonnee=coordonnee, label_color=label_color, label_position=label_position)
+            G.add_node(id, name, fill=fill, label=label, node_options=options, coordonnee=coordonnee, label_color=label_color, label_position=label_position, contour=contour)
 
         elif command.find("\\path") != -1:
             command = command.splitlines()
@@ -82,15 +87,15 @@ def load(file):
                 for opt in options:
                     if opt.find("-") != -1:
                         opt=''.join(opt.split())
-                        orientation = opt
+                        if opt=='-' or opt=='->' or opt=='<-':
+                            orientation = opt
 
                     elif opt.find("color") != -1:
                         opt=''.join(opt.split())
                         color = opt[6:]
 
                     elif opt.find('"') != -1:
-                        opt=''.join(opt.split())
-                        weight = opt[1:-1]
+                        weight = opt[opt.find('"')+1:opt.rfind('"')]
 
                 options = ",".join(other_options)
                 

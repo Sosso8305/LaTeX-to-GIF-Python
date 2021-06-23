@@ -150,14 +150,14 @@ def FunctTest(Graph):
 
 
 
-def gen_beamer(anim,file):
+def gen_beamer(anim,file,LaTeX=False):
 
     ######Python to LaTeX######
     if not os.path.exists("./out/"):
         os.mkdir("./out/")
     os.chdir("./out/")
 
-    current_dir = os.getcwd();
+    current_dir = os.getcwd()
 
     with tempfile.TemporaryDirectory() as tempdir:
      
@@ -204,6 +204,8 @@ def gen_beamer(anim,file):
         # check if PDF is successfully generated
         if os.path.exists(pdf_filename):
             subprocess.run(['cp', pdf_filename, file+".pdf"])
+            if(LaTeX):
+                subprocess.run(['cp', tex_filename, file+".tex"])
         else:
             raise RuntimeError('PDF output not found')
 

@@ -1,7 +1,5 @@
-from heapq import heappop, heappush
 from graph import Graph
 import os, platform, subprocess, tempfile
-
 
 
 ############Begin_Parser##################
@@ -234,12 +232,5 @@ def gen_pdf(anim,file,out_tex=False):
 
 #############END_Back-end###################
 
-if __name__ == "__main__":
 
-    x = load('LaTeX/Text.tex')
-    FunctTest(x)
-    A = [load('LaTeX/Text.tex'), x]
-
-    gen_beamer(A,"first")
-    gen_pdf(A, "second",True)
 

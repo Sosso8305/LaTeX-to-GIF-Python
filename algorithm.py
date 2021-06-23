@@ -1,16 +1,8 @@
 from heapq import heappop, heappush
-from graph import Graph
-from graphanime import load, gen_beamer
 
-WHITE = (255, 255, 255)
-GREY = (128, 128, 128)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-ORANGE = (255, 127, 0)
-YELLOW = (255, 255, 0)
+
 INFINI = "$\infty$"
+
 
 def Dijkstra(Graph,source,sink):
     for e in Graph.E:
@@ -29,15 +21,15 @@ def Dijkstra(Graph,source,sink):
     liste_graphes.append(Graph_copy.copy())
     Graph_copy.fill[source] = "red"
     liste_graphes.append(Graph_copy.copy())
-    # print("couleur, dans le graphe, du noeud ", source, " colorie : ", Graph_copy.fill[source])
+    #print("couleur, dans le graphe, du noeud ", source, " colorie : ", Graph_copy.fill[source])
 
     i = 0
     while(priority_queue):
-        for elt in priority_queue:
-            print("Boucle ", i, "\tElement de la liste : ", elt)
+        #for elt in priority_queue:
+            #print("Boucle ", i, "\tElement de la liste : ", elt)
         i += 1
         (distance_from_source, noeud) = heappop(priority_queue)
-        print("Noeud sorti : ", noeud, "\tPriorite : ", distance_from_source)
+        #print("Noeud sorti : ", noeud, "\tPriorite : ", distance_from_source)
         Graph_copy.fill[noeud] = "red"
         liste_graphes.append(Graph_copy.copy())
         if(noeud == sink):
@@ -73,28 +65,3 @@ def Dijkstra(Graph,source,sink):
         liste_graphes.append(Graph_copy.copy())
     
     return liste_graphes
-
-
-mon_graphe = load('Exemples/exemple_dijkstra.tex')
-# print("Graphe initial")
-# for v in range(len(mon_graphe.V)):
-#     print("Couleur du noeud ", mon_graphe.V[v], " : ", mon_graphe.fill[mon_graphe.V[v]])
-#     print("Label du noeud ", mon_graphe.V[v], " : ",mon_graphe.label[mon_graphe.V[v]])
-# for e in range(len(mon_graphe.E)):
-#     print("Poids de l'arc ", mon_graphe.E[e], " : ", mon_graphe.weight[mon_graphe.E[e]])
-#     print("Couleur de l'arc ", mon_graphe.E[e], " : ", mon_graphe.color[mon_graphe.E[e]])
-
-ma_liste = Dijkstra(mon_graphe, "node 3", "node 5")
-# i = 0
-# for elt in ma_liste:
-#     print("\n======================================================")
-#     print(f"Graphe numero {i}")
-#     i +=1
-#     for v in range(len(elt.V)):
-#         print("Couleur du noeud ", elt.V[v], " : ", elt.fill[elt.V[v]])
-#         print("Label du noeud ", elt.V[v], " : ",elt.label[elt.V[v]])
-#     for e in range(len(elt.E)):
-#         print("Poids de l'arc ", elt.E[e], " : ", elt.weight[elt.E[e]])
-#         print("Couleur de l'arc ", elt.E[e], " : ", elt.color[elt.E[e]])
-
-gen_beamer(ma_liste, "mon_test_dijkstra")

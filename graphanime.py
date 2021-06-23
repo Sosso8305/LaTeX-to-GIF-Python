@@ -35,11 +35,13 @@ def load(file):
     AllCommand = AllCommand.split(';')
     for command in AllCommand:
         if command.find("\\node") != -1:
-            options = command[(command.find("[")+1):command.find("]")]
+            options = command[(command.find("[")+1):command.rfind("]")]
             options = options.split(',')
 
             fill ="" 
             label ="" 
+            label_color=""
+            label_position=""
             other_options=[]
             for opt in options:
                 if opt.find("fill") != -1:
@@ -47,8 +49,17 @@ def load(file):
                     fill = opt[5:]
 
                 elif opt.find("label") != -1:
-                    opt=''.join(opt.split())
-                    label = opt[6:]
+                    if opt.find("{") != -1:
+                        opt=opt[opt.find("{")+1:opt.find("}")]
+                    if opt.find(":") != -1:
+                        label = opt[opt.find(":")+1:]
+                        if opt.find("[") != -1:
+                            label_color = opt[opt.find("[")+1:opt.find("]")]
+                            label_position = opt[opt.find("]")+1:opt.find(":")]
+                        else :
+                            label_position = opt[:opt.find(":")]
+                    else:
+                        label=opt[opt.find("=")+1:]
                 else:
                     other_options.append(opt)
 
@@ -61,7 +72,7 @@ def load(file):
             if command.find("at(") != -1: 
                 coordonnee = command[command.find("at(")+3:command.find("at(")+command[command.find("at("):].find(")")]
                 coordonnee = coordonnee.split(',')
-            G.add_node(id, name, fill=fill, label=label, node_options=options, coordonnee=coordonnee)
+            G.add_node(id, name, fill=fill, label=label, node_options=options, coordonnee=coordonnee, label_color=label_color, label_position=label_position)
 
         elif command.find("\\path") != -1:
             command = command.splitlines()
@@ -200,14 +211,23 @@ def gen_beamer(anim,file,out_tex=False):
         subprocess.run(['pdflatex', '-interaction=batchmode', tex_filename])
 
         os.chdir(current_dir)
-
-        # check if PDF is successfully generated
         if os.path.exists(pdf_filename):
-            subprocess.run(['cp', pdf_filename, file+".pdf"])
-            if(out_tex):
-                subprocess.run(['cp', tex_filename, file+".tex"])
+            print(current_dir)
+            print(pdf_filename)
+            print(tempdir)
+            a='copy ' + pdf_filename + ' "' +current_dir + '\\"'
+            print(a)
+            os.system(a)
+            if out_tex:
+                os.system('copy ' + tex_filename + ' "' +current_dir + '\\"')
         else:
             raise RuntimeError('PDF output not found')
+        # check if PDF is successfully generated
+        # 
+        #     subprocess.run(['copy', pdf_filename, current_dir + '\\'])
+        #     if(out_tex):
+        #         subprocess.run(['copy', tex_filename, current_dir + '\\'])
+        # 
 
 
         os.chdir("../")
@@ -277,6 +297,6 @@ if __name__ == "__main__":
     FunctTest(x)
     A = [load('LaTeX/Text.tex'), x]
 
-    gen_beamer(A,"first")
-    gen_pdf(A, "second",True)
+    gen_beamer(A,"first", True)
+    #gen_pdf(A, "second",True)
 

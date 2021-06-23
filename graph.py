@@ -13,6 +13,8 @@ class Graph:
         self.node_options = defaultdict(lambda: '')
         self.display_name = defaultdict(lambda: '')
         self.coordonnee = defaultdict(lambda: '')
+        self.label_color = defaultdict(lambda: '')
+        self.label_position = defaultdict(lambda: '')
 
         #option out for E
         self.orientation = orientation
@@ -20,13 +22,15 @@ class Graph:
         self.color = defaultdict(lambda: '')
         self.edge_options = defaultdict(lambda: '')
 
-    def add_node(self,id, display_name, fill='', label='', node_options='', coordonnee=()):
+    def add_node(self,id, display_name, fill='', label='', node_options='', coordonnee=(), label_color='', label_position=''):
         self.V.append(id)
         self.display_name[id] = display_name
         if fill: self.fill[id]=fill
         if label: self.label[id]=label
         if node_options: self.node_options[id]=node_options
         if coordonnee: self.coordonnee[id]=coordonnee
+        if label_color: self.label_color[id]=label_color
+        if label_position: self.label_position[id]=label_position
 
     def add_link(self, edge, orientation, weight='', color='', edge_options=''):
         if not edge[0] in self.V: self.V.append(edge[0])
@@ -38,20 +42,8 @@ class Graph:
         if edge_options: self.edge_options[edge]= edge_options
 
     def copy(self):
-        from copy import copy
-        g = Graph(self.name, self.V.copy(), self.E.copy())
-        g.preambule = self.preambule.copy()
-        g.fill = self.fill.copy()
-        g.label = self.label.copy()
-        g.node_options = self.node_options.copy()
-        g.display_name = self.display_name.copy()
-        g.coordonnee = self.coordonnee.copy()
-        g.orientation = self.orientation.copy()
-        g.weight = self.weight.copy()
-        g.color = self.color.copy()
-        g.edge_options = self.edge_options.copy()
-
-        return g
+        from copy import deepcopy
+        return deepcopy(self)
 
     def writeLaTeX(self):
         AllCommand = []
@@ -67,7 +59,12 @@ class Graph:
             if v in self.fill.keys():
                 command += f"fill={self.fill[v]},"
             if v in self.label.keys():
-                command += f"label={self.label[v]},"
+                command += f"label={{"
+                if v in self.label_color.keys():
+                    command += f"[{self.label_color[v]}]"
+                if v in self.label_position.keys():
+                    command += f"{self.label_position[v]}"
+                command += f":{self.label[v]}}},"
             command+= f"] {{{self.display_name[v]}}};"
             AllCommand.append(command)
         

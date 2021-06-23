@@ -150,7 +150,7 @@ def FunctTest(Graph):
 
 
 
-def gen_beamer(anim,file,LaTeX=False):
+def gen_beamer(anim,file,out_tex=False):
 
     ######Python to LaTeX######
     if not os.path.exists("./out/"):
@@ -204,7 +204,64 @@ def gen_beamer(anim,file,LaTeX=False):
         # check if PDF is successfully generated
         if os.path.exists(pdf_filename):
             subprocess.run(['cp', pdf_filename, file+".pdf"])
-            if(LaTeX):
+            if(out_tex):
+                subprocess.run(['cp', tex_filename, file+".tex"])
+        else:
+            raise RuntimeError('PDF output not found')
+
+
+        os.chdir("../")
+
+    
+
+
+def gen_pdf(anim,file,out_tex=False):
+    
+    ######Python to LaTeX######
+    if not os.path.exists("./out/"):
+        os.mkdir("./out/")
+    os.chdir("./out/")
+
+    current_dir = os.getcwd()
+
+    with tempfile.TemporaryDirectory() as tempdir:
+     
+        os.chdir(tempdir)
+        fOut = open(file+".tex","w")
+        
+        fOut.write("\\documentclass[tikz]{standalone}\n")
+        fOut.write( anim[0].preambule + "\n")
+        
+        fOut.write("\\begin{document} \n")
+
+        for G in anim:
+            
+            fOut.write("\\centering\n")
+            fOut.write("\\begin{tikzpicture} ")
+            fOut.write(G.writeLaTeX())
+            fOut.write("\\end{tikzpicture} \n")
+           
+        
+        fOut.write("\\end{document}")
+
+        fOut.close()
+    
+        ######LaTeX to PDF######
+        
+        # TeX source filename
+        tex_filename = os.path.join(tempdir,file+".tex")
+        # the corresponding PDF filename
+        pdf_filename = os.path.join(tempdir,file+".pdf")
+
+        # compile TeX file
+        subprocess.run(['pdflatex', '-interaction=batchmode', tex_filename])
+
+        os.chdir(current_dir)
+
+        # check if PDF is successfully generated
+        if os.path.exists(pdf_filename):
+            subprocess.run(['cp', pdf_filename, file+".pdf"])
+            if(out_tex):
                 subprocess.run(['cp', tex_filename, file+".tex"])
         else:
             raise RuntimeError('PDF output not found')
@@ -221,4 +278,5 @@ if __name__ == "__main__":
     A = [load('LaTeX/Text.tex'), x]
 
     gen_beamer(A,"first")
+    gen_pdf(A, "second",True)
 

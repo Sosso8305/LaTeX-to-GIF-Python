@@ -87,7 +87,7 @@ def load(file):
                 for opt in options:
                     if opt.find("-") != -1:
                         opt=''.join(opt.split())
-                        if opt=='-' or opt=='->':
+                        if opt=='-' or opt=='->' or opt=='<-':
                             orientation = opt
 
                     elif opt.find("color") != -1:

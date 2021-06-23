@@ -1,17 +1,8 @@
-from heapq import heappop, heappush
 from graph import Graph
 import os, platform, subprocess, tempfile
 
-# Define constants as in pseudo-code
-WHITE = (255, 255, 255)
-GREY = (128, 128, 128)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-ORANGE = (255, 127, 0)
-YELLOW = (255, 255, 0)
-INFINI = "$\infty$"
+
+############Begin_Parser##################
 
 def load(file):
     fileTex = open(file,"r")
@@ -104,62 +95,11 @@ def load(file):
 
     return G
 
-
-def Dijkstra(Graph,source,sink):
-    print("TODO")
-    Graph_copy = Graph.copyTo()
-    liste_graphes = []
-    distance_from_source = 0
-    priority_queue = []
-    for s in Graph_copy.allNodes:
-        Graph_copy.fill[s] = WHITE
-        Graph_copy.label[s] = INFINI
-    heappush(priority_queue, (source, 0)) # Je mets dans ma file de priorités un tuple avec le noeud source et la valeur 0 (car distance de source à source = 0)
-    Graph_copy.label[source] = str(0) # Le label tel que défini dans la classe Node contient la distance depuis le noeud source
-    liste_graphes.append(Graph_copy.copyTo())
-    Graph_copy.fill[source] = GREY
-    liste_graphes.append(Graph_copy.copyTo())
-
-    while(priority_queue):
-        (noeud, distance_from_source) = heappop(priority_queue)
-        Graph_copy.fill[noeud] = GREY
-        liste_graphes.append(Graph_copy.copyTo())
-        
-        for e in Graph.E:
-            if (noeud is e[0]) or (noeud is e[1] and Graph_copy.orientation):
-                Graph_copy.color[e] = ORANGE
-                liste_graphes.append(Graph_copy.copyTo())
-                if (Graph_copy.label[noeud] == INFINI) or (distance_from_source + lien.weight < int(s.label)): # Comme le label est un string, il faut le passer en int
-                    s.label = str(distance_from_source + lien.weight)
-                    liste_graphes.append(Graph_copy.copyTo())
-                    s.predecessors.append(noeud)
-                    heappush(priority_queue, (s, int(s.label)))
-        noeud.couleur = BLACK
-        liste_graphes.append(Graph_copy.copyTo())
-    
-    return liste_graphes
-
-def FunctTest(Graph):
-    i = 0
-    j = 0
-    for s in Graph.V:
-        if(i%3 == 0):
-            Graph.fill[s] = "red"
-        elif(i%3 == 1):
-            Graph.label[s] = "STI > toutes les autres filieres"
-        else:
-            Graph.label[s] = "TA XD GER SZ"
-            Graph.fill[s] = "green"
-        i += 1
-    for a in Graph.E:
-        if(j%2 == 0):
-            Graph.color[a] = "blue"
-        else:
-            Graph.weight[a] = "42"
-        j += 1
-    return "FunctTest\n"
+############END_Parser##################
 
 
+
+#############BEGIN_Back-end###################
 
 def gen_beamer(anim,file,out_tex=False):
 
@@ -212,14 +152,19 @@ def gen_beamer(anim,file,out_tex=False):
 
         os.chdir(current_dir)
         if os.path.exists(pdf_filename):
-            print(current_dir)
-            print(pdf_filename)
-            print(tempdir)
-            a='copy ' + pdf_filename + ' "' +current_dir + '\\"'
-            print(a)
-            os.system(a)
-            if out_tex:
-                os.system('copy ' + tex_filename + ' "' +current_dir + '\\"')
+            if (platform.system()=='Windows'):
+                os.system('copy ' + pdf_filename + ' "' +current_dir + '\\"')
+                if(out_tex):
+                    os.system('copy ' + tex_filename + ' "' +current_dir + '\\"')
+
+            elif(platform.system()=='Linux'or'Darwin'):
+                subprocess.run(['cp', pdf_filename, file+".pdf"])
+                if(out_tex):
+                    subprocess.run(['cp', tex_filename, file+".tex"])
+
+            else:
+                print("Don't have a right system")
+
         else:
             raise RuntimeError('PDF output not found')
         # check if PDF is successfully generated
@@ -280,9 +225,19 @@ def gen_pdf(anim,file,out_tex=False):
 
         # check if PDF is successfully generated
         if os.path.exists(pdf_filename):
-            subprocess.run(['cp', pdf_filename, file+".pdf"])
-            if(out_tex):
-                subprocess.run(['cp', tex_filename, file+".tex"])
+            if (platform.system()=='Windows'):
+                os.system('copy ' + pdf_filename + ' "' +current_dir + '\\"')
+                if(out_tex):
+                    os.system('copy ' + tex_filename + ' "' +current_dir + '\\"')
+
+            elif(platform.system()=='Linux'or'Darwin'):
+                subprocess.run(['cp', pdf_filename, file+".pdf"])
+                if(out_tex):
+                    subprocess.run(['cp', tex_filename, file+".tex"])
+
+            else:
+                print("Don't have a right system")
+
         else:
             raise RuntimeError('PDF output not found')
 
@@ -290,13 +245,7 @@ def gen_pdf(anim,file,out_tex=False):
         os.chdir("../")
     
 
+#############END_Back-end###################
 
-if __name__ == "__main__":
 
-    x = load('LaTeX/Text.tex')
-    FunctTest(x)
-    A = [load('LaTeX/Text.tex'), x]
-
-    gen_beamer(A,"first", True)
-    #gen_pdf(A, "second",True)
 

@@ -174,6 +174,7 @@ def gen_beamer(anim,file,out_tex=False):
 
 def gen_pdf(anim,file,out_tex=False):
     
+
     ######Python to LaTeX######
     if not os.path.exists("./out/"):
         os.mkdir("./out/")
@@ -248,6 +249,10 @@ def gen_gif(anim,file,duration=500):
         for page in pages:
             nb+=1
             page.save(file+'_'+str(nb)+".png",'PNG')
+
+       
+
+        
 
         frames = []
         images = glob.glob("*.png")

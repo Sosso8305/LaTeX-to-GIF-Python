@@ -1,4 +1,8 @@
+# import os
+# print(os.getcwd())
 from graphanime import *
+# from graphanime.graphanime.algorithm import Dijkstra
+# from graphanime.graphanime.animation import load, gen_apng, gen_beamer, gen_gif, gen_pdf
 
 def all_gen_Dijkstra():
     x = load('Exemples/exemple_dijkstra.tex')
@@ -9,9 +13,12 @@ def all_gen_Dijkstra():
     gen_apng(A,"Dijkstra")
 
 def gen_wiki():
-    x = load('Exemples/exemple_dijkstra_wiki.tex')
+    x = load('Exemples/exemple_bellmanford.tex')
     A = Dijkstra(x, "node 1", "node 5")
-    gen_gif(A, "versusWiki",1000)
+    # gen_gif(A, "bellmanFord",1000)
+    # for elt in A:
+    #     print(elt.writeLaTeX())
+    gen_beamer(A, "bellmanFord")
     
 
 def test():

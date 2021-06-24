@@ -4,7 +4,7 @@ from heapq import heappop, heappush
 INFINI = "$\infty$"
 DEBUG = False
 
-__all__ = ['Dijstra']
+__all__ = ['Dijstra','BellmanFord']
 
 def Dijkstra(Graph,source,sink):
     for e in Graph.E:

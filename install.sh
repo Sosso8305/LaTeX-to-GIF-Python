@@ -9,3 +9,9 @@ source .venv/bin/activate 2> /dev/null
 
 echo "Installation of requirements.txt"
 pip install -r requirements.txt 2> /dev/null
+
+echo "Installation of module graphanime ...."
+cd graphanime
+python setup.py install
+cd ..
+echo "End Installation"

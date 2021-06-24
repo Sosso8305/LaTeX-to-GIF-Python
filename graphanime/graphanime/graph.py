@@ -1,4 +1,6 @@
 from collections import defaultdict
+
+
 class Graph:
     def __init__(self,name,V, E, orientation, preambule=""):
         self.name = name

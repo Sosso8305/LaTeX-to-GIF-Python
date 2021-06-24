@@ -3,6 +3,7 @@ from heapq import heappop, heappush
 
 INFINI = "$\infty$"
 
+__all__ = ['Dijstra']
 
 def Dijkstra(Graph,source,sink):
     for e in Graph.E:

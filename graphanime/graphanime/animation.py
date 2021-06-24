@@ -1,9 +1,11 @@
-from graph import Graph
+from .graph import Graph
 from pdf2image import convert_from_path
 from apng import APNG
 from PIL import Image
 import os, platform, subprocess, tempfile, glob, shutil
 
+
+__all__ = ['load', 'gen_beamer', 'gen_pdf', 'gen_apng', 'gen_gif']
 
 ############Begin_Parser##################
 

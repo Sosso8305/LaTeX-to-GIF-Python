@@ -12,3 +12,9 @@ out/*
 
 #compile file python
 __pycache__/*
+graphanime/graphanime/__pycache__/*
+
+#building module
+graphanime/build/*
+graphanime/dist/*
+graphanime/graphanime.egg-info/*

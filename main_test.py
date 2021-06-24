@@ -1,5 +1,4 @@
-from graphanime import load, gen_beamer, gen_pdf, gen_gif,gen_apng
-from algorithm import Dijkstra
+from graphanime import *
 
 def all_gen_Dijkstra():
     x = load('Exemples/exemple_dijkstra.tex')

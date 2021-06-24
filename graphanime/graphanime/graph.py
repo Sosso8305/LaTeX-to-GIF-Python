@@ -21,7 +21,7 @@ class Graph:
 
         #option out for E
         self.orientation = orientation
-        self.weight = defaultdict(lambda: '')
+        self.edge_label = defaultdict(lambda: '')
         self.color = defaultdict(lambda: '')
         self.edge_options = defaultdict(lambda: '')
 
@@ -36,12 +36,12 @@ class Graph:
         if label_position: self.label_position[id]=label_position
         if contour_color: self.contour_color[id] = contour_color
 
-    def add_link(self, edge, orientation, weight='', color='', edge_options=''):
+    def add_link(self, edge, orientation, edge_label='', color='', edge_options=''):
         if not edge[0] in self.V: self.V.append(edge[0])
         if not edge[1] in self.V: self.V.append(edge[1])
         self.E.append(edge)
         self.orientation[edge] = orientation
-        if weight: self.weight[edge] = weight
+        if edge_label: self.edge_label[edge] = edge_label
         if color: self.color[edge] = color
         if edge_options: self.edge_options[edge]= edge_options
 
@@ -80,8 +80,8 @@ class Graph:
             if e in self.edge_options.keys():
                 command += f"{self.edge_options[e]},"
             command += f"{self.orientation[e]},"
-            if e in self.weight.keys():
-                command += '"' + self.weight[e] + '",'
+            if e in self.edge_label.keys():
+                command += '"' + self.edge_label[e] + '",'
             if e in self.color.keys():
                 command += f"color={self.color[e]},"
             command += f"] ({e[1]});"

@@ -8,7 +8,7 @@ __all__ = ['Dijstra']
 
 def Dijkstra(Graph,source,sink):
     for e in Graph.E:
-        if int(Graph.weight[e]) <= 0:
+        if int(Graph.edge_label[e]) <= 0:
             print(f"Arete {e} de poids inferieur ou egal a 0. L'algorithme de Dijkstra ne traite pas ce cas : referez-vous au Bellman-Ford")
             return [Graph]
     liste_graphes = []
@@ -83,18 +83,18 @@ def Dijkstra(Graph,source,sink):
                     if DEBUG:
                         print("\t\t\t" + "o" * 50)
                         print(f"\t\t\tnoeud = {noeud}, voisin = {voisin}")
-                        print(f"\t\t\tlabel du noeud : {Graph_copy.label[noeud]}, label du voisin : {ancien_label}, distance + poids : {distance_from_source + int(Graph_copy.weight[e])}")
+                        print(f"\t\t\tlabel du noeud : {Graph_copy.label[noeud]}, label du voisin : {ancien_label}, distance + poids : {distance_from_source + int(Graph_copy.edge_label[e])}")
 
-                    if (ancien_label == INFINI) or (distance_from_source + int(Graph_copy.weight[e]) < int(ancien_label)): # Comme le label est un string, il faut le passer en int
+                    if (ancien_label == INFINI) or (distance_from_source + int(Graph_copy.edge_label[e]) < int(ancien_label)): # Comme le label est un string, il faut le passer en int
                         Graph_copy.label_color[voisin] = "green"
-                        Graph_copy.label[voisin] = ancien_label + " $>$ " + str(distance_from_source) + " + " + Graph_copy.weight[e]
+                        Graph_copy.label[voisin] = ancien_label + " $>$ " + str(distance_from_source) + " + " + Graph_copy.edge_label[e]
                         liste_graphes.append(Graph_copy.copy())
-                        Graph_copy.label[voisin] = str(distance_from_source + int(Graph_copy.weight[e]))
+                        Graph_copy.label[voisin] = str(distance_from_source + int(Graph_copy.edge_label[e]))
                         chemin = parcours + [noeud]
                         heappush(priority_queue, (int(Graph_copy.label[voisin]), voisin, chemin))
                     else:
                         Graph_copy.label_color[voisin] = "red"
-                        Graph_copy.label[voisin] = ancien_label + " $<$ " + str(distance_from_source) + " + " + Graph_copy.weight[e]
+                        Graph_copy.label[voisin] = ancien_label + " $<$ " + str(distance_from_source) + " + " + Graph_copy.edge_label[e]
                         liste_graphes.append(Graph_copy.copy())
                         Graph_copy.label[voisin] = ancien_label
                         
@@ -174,10 +174,10 @@ def BellmanFord(Graph,source):
                     voisin = e[0]
                 
                 # print(f"noeud = {noeud}, voisin = {voisin}")
-                # print(f"label du noeud : {Graph_copy.label[noeud]}, label du voisin : {Graph_copy.label[voisin]}, distance + poids : {distance_from_source + int(Graph_copy.weight[e])}")
+                # print(f"label du noeud : {Graph_copy.label[noeud]}, label du voisin : {Graph_copy.label[voisin]}, distance + poids : {distance_from_source + int(Graph_copy.edge_label[e])}")
 
-                if (Graph_copy.label[voisin] == INFINI) or (distance_from_source + int(Graph_copy.weight[e]) < int(Graph_copy.label[voisin])): # Comme le label est un string, il faut le passer en int
-                    Graph_copy.label[voisin] = str(distance_from_source + int(Graph_copy.weight[e]))
+                if (Graph_copy.label[voisin] == INFINI) or (distance_from_source + int(Graph_copy.edge_label[e]) < int(Graph_copy.label[voisin])): # Comme le label est un string, il faut le passer en int
+                    Graph_copy.label[voisin] = str(distance_from_source + int(Graph_copy.edge_label[e]))
                     liste_graphes.append(Graph_copy.copy())
                     heappush(priority_queue, (int(Graph_copy.label[voisin]), voisin))
                 

@@ -85,7 +85,7 @@ def load(file):
 
                 other_options=[]
                 color="" 
-                weight=''
+                edge_label=''
                 for opt in options:
                     if opt.find("-") != -1:
                         opt=''.join(opt.split())
@@ -97,11 +97,11 @@ def load(file):
                         color = opt[6:]
 
                     elif opt.find('"') != -1:
-                        weight = opt[opt.find('"')+1:opt.rfind('"')]
+                        edge_label = opt[opt.find('"')+1:opt.rfind('"')]
 
                 options = ",".join(other_options)
                 
-                G.add_link(edge, orientation, weight=weight, color=color, edge_options=options)
+                G.add_link(edge, orientation, edge_label=edge_label, color=color, edge_options=options)
 
     return G
 

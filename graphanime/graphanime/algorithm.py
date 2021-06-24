@@ -113,8 +113,7 @@ def Dijkstra(Graph,source,sink):
             Graph_copy.color[(e[1], e[0])] = "blue"
             Graph_copy.orientation[(e[1], e[0])] = '<-'
 
-    for i in range(10):
-        liste_graphes.append(Graph_copy.copy())
+    liste_graphes.append(Graph_copy.copy())
     
     return liste_graphes
 

@@ -38,7 +38,7 @@ def load(file):
             label ="" 
             label_color=""
             label_position=""
-            contour=""
+            contour_color=""
             other_options=[]
             for opt in options:
                 if opt.find("fill") != -1:
@@ -59,8 +59,8 @@ def load(file):
                         label=opt[opt.find("=")+1:]
                 elif opt.find("draw") != -1:
                     if opt.find("=") != -1:
-                        contour = " "+opt[opt.find("=")+1:]
-                    else : contour = " "
+                        contour_color = " "+opt[opt.find("=")+1:]
+                    else : contour_color = " "
                 else:
                     other_options.append(opt)
 
@@ -73,7 +73,7 @@ def load(file):
             if command.find("at(") != -1: 
                 coordonnee = command[command.find("at(")+3:command.find("at(")+command[command.find("at("):].find(")")]
                 coordonnee = coordonnee.split(',')
-            G.add_node(id, name, fill=fill, label=label, node_options=options, coordonnee=coordonnee, label_color=label_color, label_position=label_position, contour=contour)
+            G.add_node(id, name, fill=fill, label=label, node_options=options, coordonnee=coordonnee, label_color=label_color, label_position=label_position, contour_color=contour_color)
 
         elif command.find("\\path") != -1:
             command = command.splitlines()
@@ -238,7 +238,6 @@ def key_sort(word,file):
 
 
 def gen_gif(anim,file,duration=500):
-    
     if not os.path.exists("./out/"):
         os.mkdir("./out/")
     os.chdir("./out/")    
@@ -269,6 +268,8 @@ def gen_gif(anim,file,duration=500):
         for img in images:
             new_frame =Image.open(img)
             frames.append(new_frame)
+        for _ in range(10):
+            frames.append(new_frame)
 
         frames[0].save(file+".gif",format='GIF',append_images=frames[1:],save_all=True,duration=duration,loop=0)
     
@@ -288,7 +289,6 @@ def gen_gif(anim,file,duration=500):
         
 
 def gen_apng(anim,file,delay=500):
-    
     if not os.path.exists("./out/"):
         os.mkdir("./out/")
     os.chdir("./out/")    
@@ -305,7 +305,9 @@ def gen_apng(anim,file,delay=500):
         for page in pages:
             nb+=1
             page.save(file+'_'+str(nb)+".png",'PNG')
-
+        for _ in range(10):
+            nb +=1
+            page.save(file+'_'+str(nb)+".png",'PNG')
         
         images = glob.glob("*.png")
 

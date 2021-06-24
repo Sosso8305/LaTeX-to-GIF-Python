@@ -15,10 +15,8 @@ def all_gen_Dijkstra():
 def gen_wiki():
     x = load('Exemples/exemple_bellmanford.tex')
     A = Dijkstra(x, "node 1", "node 5")
-    # gen_gif(A, "bellmanFord",1000)
-    # for elt in A:
-    #     print(elt.writeLaTeX())
-    gen_beamer(A, "bellmanFord")
+    gen_apng(A, "bellmanFord",1000)
+    gen_pdf(A, "bellmanFord")
     
 
 def test():
@@ -30,6 +28,6 @@ def test():
 
 if __name__ == "__main__":
    
-    gen_wiki()
+    all_gen_Dijkstra()
     
     

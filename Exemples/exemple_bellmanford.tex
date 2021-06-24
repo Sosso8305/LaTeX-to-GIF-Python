@@ -4,11 +4,11 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta, automata, positioning, quotes}
 
-\tikzstyle{every picture} = [node distance=1.3cm]
+\tikzstyle{every picture} = [every edge quotes/.append style={font=\scriptsize, inner xsep=.1mm, inner ysep=.2mm}, node distance=1.3cm]
 
 
 \begin{document} 
-        \begin{tikzpicture} [every edge quotes/.append style={font=\scriptsize, inner xsep=.1mm, inner ysep=.2mm}]
+        \begin{tikzpicture} 
             \node (node 1) [circle,text=white,fill=blue!50,] {S};
             \node (node 2) [circle,text=white,fill=blue!50,above right of= node 1] {T};
             \node (node 3) [circle,text=white,fill=blue!50,below right of= node 1] {U};

@@ -76,21 +76,35 @@ def Dijkstra(Graph,source,sink):
                     else:
                         voisin = e[0]
                     
+                    ancien_label = Graph_copy.label[voisin]
+                    Graph_copy.label[voisin] = "?"
+                    liste_graphes.append(Graph_copy.copy())
+
                     if DEBUG:
                         print("\t\t\t" + "o" * 50)
                         print(f"\t\t\tnoeud = {noeud}, voisin = {voisin}")
-                        print(f"\t\t\tlabel du noeud : {Graph_copy.label[noeud]}, label du voisin : {Graph_copy.label[voisin]}, distance + poids : {distance_from_source + int(Graph_copy.weight[e])}")
+                        print(f"\t\t\tlabel du noeud : {Graph_copy.label[noeud]}, label du voisin : {ancien_label}, distance + poids : {distance_from_source + int(Graph_copy.weight[e])}")
 
-                    if (Graph_copy.label[voisin] == INFINI) or (distance_from_source + int(Graph_copy.weight[e]) < int(Graph_copy.label[voisin])): # Comme le label est un string, il faut le passer en int
-                        Graph_copy.label[voisin] = str(distance_from_source + int(Graph_copy.weight[e]))
+                    if (ancien_label == INFINI) or (distance_from_source + int(Graph_copy.weight[e]) < int(ancien_label)): # Comme le label est un string, il faut le passer en int
+                        Graph_copy.label_color[voisin] = "green"
+                        Graph_copy.label[voisin] = ancien_label + " $>$ " + str(distance_from_source) + " + " + Graph_copy.weight[e]
                         liste_graphes.append(Graph_copy.copy())
+                        Graph_copy.label[voisin] = str(distance_from_source + int(Graph_copy.weight[e]))
                         chemin = parcours + [noeud]
                         heappush(priority_queue, (int(Graph_copy.label[voisin]), voisin, chemin))
+                    else:
+                        Graph_copy.label_color[voisin] = "red"
+                        Graph_copy.label[voisin] = ancien_label + " $<$ " + str(distance_from_source) + " + " + Graph_copy.weight[e]
+                        liste_graphes.append(Graph_copy.copy())
+                        Graph_copy.label[voisin] = ancien_label
+                        
 
                     Graph_copy.color[e] = "black"
                     if(Graph.orientation[e] == '-'):
                         Graph_copy.orientation[e] = '-'
                     aretes_explorees.append(e)
+                    liste_graphes.append(Graph_copy.copy())
+                    Graph_copy.label_color[voisin] = "black"
                     liste_graphes.append(Graph_copy.copy())
                             
             noeud_explores.append(noeud)

@@ -30,7 +30,7 @@ def test():
 
 if __name__ == "__main__":
    
-    all_gen_Dijkstra()
-    #gen_wiki()
+    # all_gen_Dijkstra()
+    gen_wiki()
     
     

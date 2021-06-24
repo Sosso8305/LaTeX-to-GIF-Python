@@ -193,17 +193,22 @@ def gen_pdf(anim,file,out_tex=False):
         
         fOut.write("\\documentclass[tikz]{standalone}\n")
         fOut.write( anim[0].preambule + "\n")
-        
-        fOut.write("\\begin{document} \n")
+        fOut.write("\\tikzset{%https://tex.stackexchange.com/questions/49888/tikzpicture-alignment-and-centering\n") #source
+        fOut.write("master/.style={\nexecute at end picture={\n\coordinate (lower right) at (current bounding box.south east);\n\coordinate (upper left) at (current bounding box.north west);}},")
+        fOut.write("slave/.style={\nexecute at end picture={\n\pgfresetboundingbox\n\path (upper left) rectangle (lower right);}}}\n")
 
+        fOut.write("\\begin{document} \n")
+        first = True
         for G in anim:
-            
             fOut.write("\\centering\n")
             fOut.write("\\begin{tikzpicture}\n")
+            if first:
+                fOut.write("[master]\n")
+                first=False
+            else: fOut.write("[slave]\n")
             fOut.write(G.writeLaTeX())
             fOut.write("\\end{tikzpicture} \n")
            
-        
         fOut.write("\\end{document}")
 
         fOut.close()
@@ -252,6 +257,7 @@ def gen_gif(anim,file,duration=500):
 
         nb = 0
         for page in pages:
+            print(page)
             nb+=1
             page.save(file+'_'+str(nb)+".png",'PNG')
 
@@ -261,9 +267,9 @@ def gen_gif(anim,file,duration=500):
 
         frames = []
         images = glob.glob("*.png")
-
+        print(images)
         images= sorted(images, key= lambda x: key_sort(x,file))
-
+        print(images)
         
         for img in images:
             new_frame =Image.open(img)

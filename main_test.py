@@ -15,6 +15,7 @@ def all_gen_Dijkstra():
 def gen_wiki():
     x = load('Exemples/exemple_dijkstra_wiki.tex')
     A = Dijkstra(x, "node 1", "node 5")
+    gen_pdf(A, "versusWiki")
     gen_gif(A, "versusWiki",1000)
     gen_beamer(A, "versusWiki_beamer")
     gen_apng(A, "versusWiki")

@@ -13,10 +13,10 @@ def all_gen_Dijkstra():
     gen_apng(A,"Dijkstra")
 
 def gen_wiki():
-    x = load('Exemples/exemple_bellmanford.tex')
+    x = load('Exemples/exemple_dijkstra_wiki.tex')
     A = Dijkstra(x, "node 1", "node 5")
-    gen_apng(A, "bellmanFord",1000)
-    gen_pdf(A, "bellmanFord")
+    gen_gif(A, "versusWiki",1000)
+   
     
 
 def test():

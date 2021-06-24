@@ -164,6 +164,9 @@ def gen_beamer(anim,file,out_tex=False):
         os.chdir(current_dir)
         if os.path.exists(pdf_filename):
             shutil.copy2(pdf_filename,current_dir)
+            if(out_tex):
+                shutil.copy2(tex_filename,current_dir)
+            
 
         else:
             raise RuntimeError('PDF output not found')
@@ -220,6 +223,8 @@ def gen_pdf(anim,file,out_tex=False):
         # check if PDF is successfully generated
         if os.path.exists(pdf_filename):
             shutil.copy2(pdf_filename,current_dir)
+            if(out_tex):
+                shutil.copy2(tex_filename,current_dir)
 
         else:
             raise RuntimeError('PDF output not found')

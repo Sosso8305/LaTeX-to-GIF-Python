@@ -268,7 +268,7 @@ def gen_gif(anim,file,duration=500):
         for img in images:
             new_frame =Image.open(img)
             frames.append(new_frame)
-        for _ in range(10):
+        for _ in range(5):
             frames.append(new_frame)
 
         frames[0].save(file+".gif",format='GIF',append_images=frames[1:],save_all=True,duration=duration,loop=0)
@@ -305,7 +305,7 @@ def gen_apng(anim,file,delay=500):
         for page in pages:
             nb+=1
             page.save(file+'_'+str(nb)+".png",'PNG')
-        for _ in range(10):
+        for _ in range(5):
             nb +=1
             page.save(file+'_'+str(nb)+".png",'PNG')
         

@@ -39,5 +39,5 @@ setup(
         "Topic :: animation",
     ],
 
-    license="None"
+    license="MIT Lisence"
 )

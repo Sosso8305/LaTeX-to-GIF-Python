@@ -6,3 +6,10 @@ python -m venv .venv
 
 # Install all required packages for the project
 pip install -r requirements.txt
+
+
+echo "Installation of module graphanime ...."
+cd graphanime
+python setup.py install
+cd ..
+echo "End Installation"

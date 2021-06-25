@@ -473,7 +473,7 @@ def Kruskal(Graph,display_weight=False,color_current_edge="blue",color_good_edge
 # #########################################################
 
 # L'algorythme marche différemment en cas de graph orienté et non orienté, si un graph est orienté alors attention : en cas d'arrete notre algorythme les transformera en double arc, mais pas très joliment
-def Floyd_Warshall(Graph, exploration_color='red', is_being_modified_color='green', has_been_modified_color='pink'):
+def Floyd_Warshall(Graph, exploration_color='red', is_being_modified_color='green', has_been_modified_color='pink', bend=''):
     """This algorythm gives the shortest distance between every node of the graph.
     Beware ! This algorythm does not work the same way for an oriented and not oriented graph, in an oriented graph : non oriented edges will be converted to double arcs, not beautifully.
 
@@ -482,6 +482,7 @@ def Floyd_Warshall(Graph, exploration_color='red', is_being_modified_color='gree
         exploration_color (str, optional): The color given to edges being tested as shortcuts. Defaults to 'red'.
         is_being_modified_color (str, optional): The color given to edges being modified. Defaults to 'green'.
         has_been_modified_color (str, optional): The color given to edges which has been modified . Defaults to 'pink'.
+        bend (str, optional): 'right' or 'left': bend the new edges created. defaults to ''
 
     Returns:
         list(Graph): The list of each state of the graph during the application of the algorythm
@@ -539,6 +540,7 @@ def Floyd_Warshall(Graph, exploration_color='red', is_being_modified_color='gree
                     if path not in Graph.E:
                         Graph.E.append(path)
                         Graph.orientation[path]='->'
+                        if bend: Graph.edge_options[path] += ",bend "+bend
                     #dist=str(int(Graph.edge_label[shortcut1])+int(Graph.edge_label[shortcut2]))
                 else:
                     if shortcut1 not in Graph.E:
@@ -553,6 +555,10 @@ def Floyd_Warshall(Graph, exploration_color='red', is_being_modified_color='gree
                         Graph.E.append(path)
                         Graph.orientation[path]='-'
                     #dist=str(int(Graph.edge_label[((i,k) if (i,k) in Graph.E else (k,i))])+int(Graph.edge_label[((k,j) if (k,j) in Graph.E else (j,k))]))
+                print(shortcut1)
+                print(Graph.edge_label[shortcut1])
+                print(shortcut2)
+                print(Graph.edge_label[shortcut2])
                 dist=str(int(Graph.edge_label[shortcut1])+int(Graph.edge_label[shortcut2]))
                 tmp_color1=Graph.color[shortcut1]
                 tmp_color2=Graph.color[shortcut2]

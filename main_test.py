@@ -26,6 +26,14 @@ def gen_floyd_warshall():
     gen_gif(A, "warshall",1000)
     gen_beamer(A, "warshall_beamer", True)
     gen_apng(A, "warshall")
+
+def gen_floyd_warshall2():
+    x = load('Exemples/exemple_floyd_warshall2.tex')
+    A = Floyd_Warshall(x, bend='left')
+    #gen_pdf(A, "warshall")
+    gen_gif(A, "floyd_warshall",1000)
+    gen_beamer(A, "warshall_beamer2", True)
+    #gen_apng(A, "warshall")
     
 def all_gen_FordFulkerson():
     x = load('Exemples/exemple_fordfulkerson.tex')
@@ -52,8 +60,9 @@ def test():
 
 if __name__ == "__main__":
    
-    all_gen_FordFulkerson()  
-    all_gen_Dijkstra()
-    gen_wiki()
-    gen_floyd_warshall()
-    gen_Kruskal()
+    # all_gen_FordFulkerson()  
+    # all_gen_Dijkstra()
+    # gen_wiki()
+    # gen_floyd_warshall()
+    # gen_Kruskal()
+    gen_floyd_warshall2()

@@ -87,23 +87,22 @@ def load(file):
                 color="" 
                 edge_label=''
                 for opt in options:
-                    if opt.find("-") != -1:
+                    if opt.find("color") != -1:
+                        opt=''.join(opt.split())
+                        color = opt[6:]
+                    elif opt.find('"') != -1:
+                        print(opt)
+                        edge_label = opt[opt.find('"')+1:opt.rfind('"')]
+                    elif opt.find("-") != -1:
                         opt=''.join(opt.split())
                         if opt=='-' or opt=='->' or opt=='<-':
                             orientation = opt
-
-                    elif opt.find("color") != -1:
-                        opt=''.join(opt.split())
-                        color = opt[6:]
-
-                    elif opt.find('"') != -1:
-                        edge_label = opt[opt.find('"')+1:opt.rfind('"')]
                     else:
                         other_options.append(opt)
                 options = ",".join(other_options)
                 
                 G.add_link(edge, orientation, edge_label=edge_label, color=color, edge_options=options)
-
+    print(G.edge_label)
     return G
 
 ############END_Parser##################

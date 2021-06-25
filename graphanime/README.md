@@ -90,6 +90,8 @@ And for more exemple go to [github](https://github.com/Sosso8305/LaTeX-to-GIF-Py
 
 
 # Change Log 
+## 0.0.8
+change name github project 
 
 ## 0.0.7
 change documentation FR to EN

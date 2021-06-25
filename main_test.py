@@ -19,18 +19,24 @@ def gen_wiki():
     gen_beamer(A, "versusWiki_beamer")
     gen_apng(A, "versusWiki")
    
-    
+def all_gen_FordFulkerson():
+    x = load('Exemples/exemple_fordfulkerson.tex')
+    A = FordFulkerson(x)
+    gen_beamer(A,"FordFulkerson_beamer")
+    gen_pdf(A,"FordFulkerson")
+    gen_gif(A,"FordFulkerson",700)
+    gen_apng(A,"FordFulkerson",700)
 
 def test():
-    y = load("Exemples/test.tex")
-    B = [y, y]
-    gen_beamer(B, "test")
+    y = load("Exemples/exemple_fordfulkerson.tex")
+    B = FordFulkerson(y)
+    gen_beamer(B, "FordFulkerson")
 
 
 
 if __name__ == "__main__":
    
-    # all_gen_Dijkstra()
-    gen_wiki()
+    all_gen_FordFulkerson()
+    # gen_wiki()
     
     

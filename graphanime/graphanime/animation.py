@@ -98,7 +98,8 @@ def load(file):
 
                     elif opt.find('"') != -1:
                         edge_label = opt[opt.find('"')+1:opt.rfind('"')]
-
+                    else:
+                        other_options.append(opt)
                 options = ",".join(other_options)
                 
                 G.add_link(edge, orientation, edge_label=edge_label, color=color, edge_options=options)
@@ -257,7 +258,6 @@ def gen_gif(anim,file,duration=500):
 
         nb = 0
         for page in pages:
-            print(page)
             nb+=1
             page.save(file+'_'+str(nb)+".png",'PNG')
 
@@ -267,9 +267,7 @@ def gen_gif(anim,file,duration=500):
 
         frames = []
         images = glob.glob("*.png")
-        print(images)
         images= sorted(images, key= lambda x: key_sort(x,file))
-        print(images)
         
         for img in images:
             new_frame =Image.open(img)

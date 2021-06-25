@@ -4,7 +4,7 @@ from heapq import heappop, heappush
 INFINI = "$\infty$"
 DEBUG = False
 
-__all__ = ['Dijstra']
+__all__ = ['Dijstra', 'Floyd_Warshall']
 
 def Dijkstra(Graph,source,sink):
     for e in Graph.E:
@@ -185,4 +185,96 @@ def BellmanFord(Graph,source):
         Graph_copy.fill[noeud] = "black"
         liste_graphes.append(Graph_copy.copy())
     
+    return liste_graphes
+
+
+# L'algorythme marche différemment en cas de graph orienté et non orienté, si un graph est orienté alors attention : en cas d'arrete notre algorythme les transformera en double arc, mais pas très joliment
+def Floyd_Warshall(Graph):
+    oriented = False
+    for e in Graph.E:
+        if Graph.orientation[e]!='-':
+            oriented = True
+            break
+    Graph=Graph.copy()
+    # On transforme d'abord le graph en graph orienté dans un seul sens
+    if oriented:
+        for e in Graph.E:
+            if Graph.orientation[e]=='-':
+                Graph.orientation[e]='->'
+                Graph.E.append((e[1],e[0]))
+                Graph.orientation[(e[1],e[0])]='->'
+                Graph.edge_label[(e[1],e[0])]=Graph.edge_label[e]
+                Graph.color[(e[1],e[0])]=Graph.color[e]
+                Graph.edge_options[(e[1],e[0])]=Graph.edge_options[e]
+            if Graph.orientation[e]=='<-':
+                if (e[1],e[0]) in Graph.E:
+                    Graph.orientation[e]='->'
+                    Graph.orientation[(e[1],e[0])]='->'
+                    tmp_edge_label=Graph.edge_label[(e[1],e[0])]
+                    tmp_color= Graph.color[(e[1],e[0])]
+                    tmp_options=Graph.edge_options[(e[1],e[0])]
+                    Graph.edge_label[(e[1],e[0])]=Graph.edge_label.pop(e)
+                    Graph.color[(e[1],e[0])]=Graph.color.pop(e)
+                    Graph.edge_options[(e[1],e[0])]=Graph.edge_options.pop(e)
+                    Graph.edge_label[e]=tmp_edge_label
+                    Graph.color[e]=tmp_color
+                    Graph.edge_options[e]=tmp_options
+                else:
+                    Graph.E.remove(e)
+                    Graph.E.append((e[1],e[0]))
+                    Graph.orientation[(e[1],e[0])]='->'
+                    Graph.edge_label[(e[1],e[0])]=Graph.edge_label.pop(e)
+                    Graph.color[(e[1],e[0])]=Graph.color.pop(e)
+                    Graph.edge_options[(e[1],e[0])]=Graph.edge_options.pop(e)
+
+    # Application de l'algorythme
+    liste_graphes=[Graph.copy()]
+    for k in Graph.V:
+        for i in Graph.V:
+            for j in Graph.V:
+                path = (i,j)
+                shortcut1=(i,k)
+                shortcut2=(k,j)
+                if i == j:
+                    continue
+                if oriented:
+                    if shortcut1 not in Graph.E or shortcut2 not in Graph.E:
+                        continue
+                    if path not in Graph.E:
+                        Graph.E.append(path)
+                        Graph.orientation[path]='->'
+                    #dist=str(int(Graph.edge_label[shortcut1])+int(Graph.edge_label[shortcut2]))
+                else:
+                    if shortcut1 not in Graph.E:
+                        shortcut1=(k,i)
+                    if shortcut2 not in Graph.E:
+                        shortcut2=(j,k)
+                    if shortcut1 not in Graph.E or shortcut2 not in Graph.E:
+                        continue
+                    if (i,j) not in Graph.E and (j,i) in Graph.E:
+                        continue
+                    if path not in Graph.E:
+                        Graph.E.append(path)
+                        Graph.orientation[path]='-'
+                    #dist=str(int(Graph.edge_label[((i,k) if (i,k) in Graph.E else (k,i))])+int(Graph.edge_label[((k,j) if (k,j) in Graph.E else (j,k))]))
+                dist=str(int(Graph.edge_label[shortcut1])+int(Graph.edge_label[shortcut2]))
+                tmp_color1=Graph.color[shortcut1]
+                tmp_color2=Graph.color[shortcut2]
+                tmp_contour=Graph.contour_color[k]
+                Graph.color[shortcut1]='red'
+                Graph.color[shortcut2]='red'
+                Graph.contour_color[k]='red'
+                modified =False
+                if path not in Graph.edge_label.keys() or int(Graph.edge_label[path]) > int(dist):
+                    Graph.edge_label[path] = dist
+                    Graph.color[path]='green'
+                    modified = True
+                liste_graphes.append(Graph.copy())
+                Graph.color[shortcut1]=tmp_color1
+                Graph.color[shortcut2]=tmp_color2
+                Graph.contour_color[k]=tmp_contour
+                if not tmp_contour:
+                    Graph.contour_color.pop(k)
+                if modified: Graph.color[path]='pink'
+    liste_graphes.append(Graph)
     return liste_graphes

@@ -20,7 +20,13 @@ def gen_wiki():
     gen_beamer(A, "versusWiki_beamer")
     gen_apng(A, "versusWiki")
    
-    
+def gen_floyd_warshall():
+    x = load('Exemples/exemple_bellmanford.tex')
+    A = Floyd_Warshall(x)
+    gen_pdf(A, "warshall")
+    gen_gif(A, "warshall",1000)
+    gen_beamer(A, "warshall_beamer", True)
+    gen_apng(A, "warshall")
 
 def test():
     y = load("Exemples/test.tex")
@@ -32,6 +38,7 @@ def test():
 if __name__ == "__main__":
    
     # all_gen_Dijkstra()
-    gen_wiki()
+    #gen_wiki()
+    gen_floyd_warshall()
     
     

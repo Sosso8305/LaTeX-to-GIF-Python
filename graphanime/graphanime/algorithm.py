@@ -6,6 +6,10 @@ DEBUG = False
 
 __all__ = ['Dijstra','BellmanFord', 'FordFulkerson','Kruskal', 'Floyd_Warshall']
 
+# #########################################################
+# ############# Dijkstra ALGORYTHM #############
+# #########################################################
+
 def Dijkstra(Graph,source,sink):
     for e in Graph.E:
         if int(Graph.edge_label[e]) <= 0:
@@ -416,10 +420,21 @@ def is_cycle(E):
 
 
 
-def Kruskal(Graph):
+def Kruskal(Graph,display_weight=False,color_current_edge="blue",color_good_edge="green",color_wrong_edge="grey!10"):
+    """It's execute Kruskal's algorithm 
+
+    Args:
+        Graph (Graph): class Graph  
+        display_weight (bool, optional): it's a weight of spanning tree. Defaults to False.
+        color_current_edge (str, optional): edge who is process. Defaults to "blue".
+        color_good_edge (str, optional): edge who is add to spanning tree. Defaults to "green".
+        color_wrong_edge (str, optional): edge who create a cycle in spanning tree. Defaults to "grey!10".
+
+    Returns:
+        [list of Graph]: it's use for genereted a file with Back-end
+    """
     graph_list=[]
     Graph=Graph.copy()
-    #may be set color of graph 
     graph_list.append(Graph.copy())
 
 
@@ -433,7 +448,7 @@ def Kruskal(Graph):
     while edge_list:
         (weight,edge) = heappop(edge_list)
 
-        Graph.color[edge]="blue"
+        Graph.color[edge]=color_current_edge
         graph_list.append(Graph.copy())
         graph_list.append(Graph.copy())
 
@@ -441,14 +456,15 @@ def Kruskal(Graph):
 
         if is_cycle(spanning_tree):
             spanning_tree.remove(edge)
-            Graph.color[edge]="grey!10"
+            Graph.color[edge]=color_wrong_edge
             graph_list.append(Graph.copy())
         else:
-            Graph.color[edge]="green"
+            Graph.color[edge]=color_good_edge
             graph_list.append(Graph.copy())
             weight_spanning_tree += weight
 
-    
+
+    if display_weight: print("The weight of spanning tree --> ", weight_spanning_tree)
 
     return graph_list
 

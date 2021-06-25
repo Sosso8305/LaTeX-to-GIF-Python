@@ -12,7 +12,7 @@ setup(
 
     packages=find_packages(),
 
-    author= "ALTAVILLA Théo / DUPLAN Xavier / EL RAWAS Gaëthan / ZOUAOUI Sofiane / help of INSA CVL",
+    author= "ALTAVILLA Théo / DUPLAN Xavier / EL RAWAS Gaëthan / ZOUAOUI Sofiane",
 
     author_email = "sofiane.zouaoui@insa-cvl.fr",
 

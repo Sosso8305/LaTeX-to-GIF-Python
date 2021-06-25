@@ -257,7 +257,6 @@ def gen_gif(anim,file,duration=500):
 
         nb = 0
         for page in pages:
-            print(page)
             nb+=1
             page.save(file+'_'+str(nb)+".png",'PNG')
 
@@ -267,9 +266,9 @@ def gen_gif(anim,file,duration=500):
 
         frames = []
         images = glob.glob("*.png")
-        print(images)
+        
         images= sorted(images, key= lambda x: key_sort(x,file))
-        print(images)
+        
         
         for img in images:
             new_frame =Image.open(img)

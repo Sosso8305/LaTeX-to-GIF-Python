@@ -4,18 +4,22 @@
 User
 ===================
 ## use module 
-install module thanks to setup.py in local
+install module thanks to /setup.py in local
 ```
 source install-module-graphanime.sh
 ```
-install module thanks to pip
+install module thanks to pip and [Pypi](https://pypi.org/project/graphanime/)
 ```
-be there soon
+pip install graphanime
 ```
 
 then in python :
 ```py
 from graphanime import *
+
+G = load("graph.tex")
+animation=Dijkstra(x, "node 1", "node 5")
+gen_gif(animation, "myGIF",700)
 ```
 And for more details in [other README](graphanime/README.md)
 

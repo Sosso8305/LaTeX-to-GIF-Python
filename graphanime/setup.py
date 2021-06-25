@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages
-import graphanime
 
 
 setup(
 
     name='graphanime',
     
-    version=graphanime.__version__,
+    version="0.0.8",
 
     packages=find_packages(),
 
@@ -20,23 +19,17 @@ setup(
     description="create execution graph in GIF/PDF with LaTex",
 
     long_description=open('./README.md').read(),
+    long_description_content_type="text/markdown",
 
-    install_requires=["pdf2image==1.16.0","apng==0.3.4"],
+    install_requires=["pdf2image","apng"],
 
     include_package_data=True,
 
-    url='https://github.com/Sosso8305/GIF-Dijkstra-Python',
+    url='https://github.com/Sosso8305/LaTeX-to-GIF-Python',
 
     classifiers=[
         "Programming Language :: Python",
-        "Programming Language :: LaTeX",
         "Natural Language :: French",
-        "Operating System :: Linux",
-        "Operating System :: Windows",
-        "Operating System :: Darwin",
-        "Topic :: graph",
-        "Topic :: GIF",
-        "Topic :: animation",
     ],
 
     license="MIT Lisence"

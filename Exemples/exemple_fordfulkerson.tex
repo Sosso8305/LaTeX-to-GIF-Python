@@ -1,40 +1,3 @@
-
-
-# Graphanime - create execution graph in GIF/PDF
-
-
-This module aim to create GIF, APNG, pdf type standalone or Beamer from a graph 
-written in LaTex. And showing an excution of one algorithm (for exemple Dijkstra)
-
-Install module:
-```
-pip install graphanime
-```
-
-# Commande
-## load(file.tex)
-return an object Graph which represented graph write in LaTeX
-
-## Dijkstra(graph,source,sink):
-excute dijkstra algorithm on graph and return list of graph
-
-## gen_beamer(anim,file)
-it's Back-end for slide Beamer with a source is list of graph (anim)
-
-## gen_pdf(anim,file)
-it's Back-end for natural pdf with a source is list of graph (anim)
-
-## gen_gif(anim,file)
-it's Back-end for GIF with a source is list of graph (anim)
-
-## gen_apng(anim,file)
-it's Back-end for APNG with a source is list of graph (anim)
-**WARNING**: it's not support everywhere 
-
-
-# Template
-
-```
 \documentclass[tikz]{standalone}
 
 \usepackage{tikz}
@@ -46,8 +9,10 @@ it's Back-end for APNG with a source is list of graph (anim)
 \begin{document}
 	\begin{tikzpicture} 
 		%\node (nom node) at(x,y) [options separées par virgules] {affichage} ;
-		\node () at(,) [] {} ;
-		\node () at(,) [] {} ;
+		\node (node 1) at(0, 1) [circle,double, double distance =1.2pt,text=white,fill=blue!50,] {S} ;
+		\node (node 2) at(2, 0) [circle,double, double distance =1.2pt,text=white,fill=blue!50,] {V} ;
+		\node (node 3) at(2, 2) [circle,double, double distance =1.2pt,text=white,fill=blue!50,] {U} ;
+		\node (node 4) at(4, 1) [circle,double, double distance =1.2pt,text=white,fill=blue!50,] {T} ;
 		
 %(nom node): charactères interdits: ( ) [ ] ; { } ,
 %at(x,y): optionel : x et y doivent être des coordonnées viables: des nombres 
@@ -63,8 +28,11 @@ it's Back-end for APNG with a source is list of graph (anim)
 	
 		%\path (nom node A) edge[options separées par virgules] (nom node B);
 		\path 
-		() edge[] ()
-		() edge[] ()
+		(node 1) edge[->,"2"] (node 2)
+		(node 1) edge[->,"4"] (node 3)
+		(node 3) edge[->,"3"] (node 2)
+		(node 3) edge[->,"1"] (node 4)
+		(node 2) edge[->,"6"] (node 4)
 		;
 
 %nom node: fait reference à un nom de nœud défini plus haut
@@ -75,26 +43,3 @@ it's Back-end for APNG with a source is list of graph (anim)
 	%color=couleur: la couleur de l’arrete.
 	\end{tikzpicture}
 \end{document}
-
-```
-
-# exemple
-
-```py
-    x = load('Exemples/exemple_dijkstra_wiki.tex')
-    A = Dijkstra(x, "node 1", "node 5")
-    gen_gif(A, "versusWiki",700)
-```
-And for more exemple go to [github](https://github.com/Sosso8305/LaTeX-to-GIF-Python)
-
-
-
-# Change Log 
-## 0.0.8
-change name github project 
-
-## 0.0.7
-change documentation FR to EN
-
-## 0.0.5
-first realese that works well

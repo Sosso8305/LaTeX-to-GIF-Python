@@ -267,7 +267,9 @@ def gen_gif(anim,file,duration=500):
 
         frames = []
         images = glob.glob("*.png")
+        
         images= sorted(images, key= lambda x: key_sort(x,file))
+        
         
         for img in images:
             new_frame =Image.open(img)

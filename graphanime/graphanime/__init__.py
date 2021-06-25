@@ -10,4 +10,4 @@ __version__ = "0.0.8"
 
 
 from .animation import load, gen_beamer, gen_pdf, gen_apng, gen_gif
-from .algorithm import Dijkstra, BellmanFord
+from .algorithm import Dijkstra, BellmanFord, Kruskal

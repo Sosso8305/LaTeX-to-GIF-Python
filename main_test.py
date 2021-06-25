@@ -18,7 +18,13 @@ def gen_wiki():
     gen_gif(A, "versusWiki",700)
     gen_beamer(A, "versusWiki_beamer")
     gen_apng(A, "versusWiki")
-   
+
+def gen_Kruskal():
+    x = load('Exemples/exemple_dijkstra_wiki.tex')
+    anim = Kruskal(x)
+    gen_gif(anim,"Kruskal")
+    gen_apng(anim,"Kruskal")
+
     
 
 def test():
@@ -31,6 +37,5 @@ def test():
 if __name__ == "__main__":
    
     # all_gen_Dijkstra()
-    gen_wiki()
-    
-    
+    #gen_wiki()
+    gen_Kruskal()

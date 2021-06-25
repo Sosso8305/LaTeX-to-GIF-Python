@@ -4,7 +4,7 @@ from collections import defaultdict
 INFINI = "$\infty$"
 DEBUG = False
 
-__all__ = ['Dijstra','BellmanFord']
+__all__ = ['Dijstra','BellmanFord','Kruskal']
 
 def Dijkstra(Graph,source,sink):
     for e in Graph.E:
@@ -181,4 +181,88 @@ def BellmanFord(Graph,source):
                 return "Donne un GRAPH QUI PEUT MARCHER!!!!!\n"
     
     return distances, predecesseurs
+
+
+
+def cycleUtils(current_node,visited,parent,graph):
+    
+    visited[current_node]=True
+  
+    for node in graph[current_node]:
+        
+        if not visited[node]:
+            if cycleUtils(node, visited, current_node, graph):
+                return True
+        
+        elif parent != node:
+            return True
+          
+    return False
+            
+    
+
+def is_cycle(E):
+    graph = {}
+    visited = {}
+
+    for edge in E:
+        node1, node2= edge
+        for x, y in [(node1, node2), (node2, node1)]:
+            if x in graph:
+                graph[x].append(y)
+            else:
+                graph[x] = [y]
+
+        visited[node1]=False
+        visited[node2]=False
+    
+
+    for node in visited:
+    
+        if not visited[node]:
+            if cycleUtils(node,visited,"-1",graph):
+                return True
+
+     
+
+    return False
+
+
+
+def Kruskal(Graph):
+    graph_list=[]
+    Graph=Graph.copy()
+    #may be set color of graph 
+    graph_list.append(Graph.copy())
+
+
+    spanning_tree=[]
+    weight_spanning_tree=0
+    edge_list=[]
+    for e in Graph.E:
+        heappush(edge_list,(int(Graph.edge_label[e]),e))
+
+
+    while edge_list:
+        (weight,edge) = heappop(edge_list)
+
+        Graph.color[edge]="blue"
+        graph_list.append(Graph.copy())
+        graph_list.append(Graph.copy())
+
+        spanning_tree.append(edge)
+
+        if is_cycle(spanning_tree):
+            spanning_tree.remove(edge)
+            Graph.color[edge]="grey!10"
+            graph_list.append(Graph.copy())
+        else:
+            Graph.color[edge]="green"
+            graph_list.append(Graph.copy())
+            weight_spanning_tree += weight
+
+    
+
+    return graph_list
+
 

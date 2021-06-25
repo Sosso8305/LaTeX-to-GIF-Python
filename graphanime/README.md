@@ -49,7 +49,7 @@ it's Back-end for APNG with a source is list of graph (anim)
 		\node () at(,) [] {} ;
 		\node () at(,) [] {} ;
 		
-%(nom node): charactères interdits: ( ) [ ] ; { } ,
+%(nom node): charactères interdits: ) [ ;
 %at(x,y): optionel : x et y doivent être des coordonnées viables: des nombres 
 %[options séparées par virgules]:  les options du nœud. En détail certain: 			 
 	%fill=couleur
@@ -59,7 +59,8 @@ it's Back-end for APNG with a source is list of graph (anim)
 	%label={[couleur du label]position du label:texte du label}
 	%texte du label : charactères interdits: ; { } ,
 	%draw ou draw=
-	%draw=couleur{Affichage}: charactères interdits: { } [ ]; 
+	%draw=couleur
+{Affichage}: charactères interdits: { ] ; 
 	
 		%\path (nom node A) edge[options separées par virgules] (nom node B);
 		\path 
@@ -71,7 +72,7 @@ it's Back-end for APNG with a source is list of graph (anim)
 %[options séparées par virgules]:  les options de l’arrête/arc. En détail certain:
 	%-> ou <-ou -: le sens de l’arrête
 	%"edge_label": indication sur l’arrête, pour Dijkstra indique le poids, pour Dijkstra option obligatoire 
-	% edge_label : charactères interdits: ; , 
+	% edge_label : charactères interdits: ; , "
 	%color=couleur: la couleur de l’arrete.
 	\end{tikzpicture}
 \end{document}

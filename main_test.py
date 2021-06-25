@@ -27,6 +27,14 @@ def all_gen_FordFulkerson():
     gen_gif(A,"FordFulkerson",700)
     gen_apng(A,"FordFulkerson",700)
 
+def gen_Kruskal():
+    x = load('Exemples/exemple_dijkstra_wiki.tex')
+    anim = Kruskal(x)
+    gen_gif(anim,"Kruskal")
+    gen_apng(anim,"Kruskal")
+
+    
+
 def test():
     y = load("Exemples/exemple_fordfulkerson.tex")
     B = FordFulkerson(y)
@@ -36,7 +44,7 @@ def test():
 
 if __name__ == "__main__":
    
-    all_gen_FordFulkerson()
-    # gen_wiki()
-    
-    
+    all_gen_FordFulkerson()  
+    # all_gen_Dijkstra()
+    #gen_wiki()
+    gen_Kruskal()

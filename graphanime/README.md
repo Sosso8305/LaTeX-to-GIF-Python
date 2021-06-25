@@ -3,8 +3,8 @@
 # Graphanime - create execution graph in GIF/PDF
 
 
-Ce module a pour but de générer des GIF, pdf type standalone ou Beamer ou APNG
-a partir d'un graph écrit en LaTeX. Et montrant l'execution d'un algorithme
+This module aim to create GIF, APNG, pdf type standalone or Beamer from a graph 
+written in LaTex. And showing an excution of one algorithm (for exemple Dijkstra)
 
 Install module:
 ```
@@ -87,3 +87,12 @@ it's Back-end for APNG with a source is list of graph (anim)
 ```
 And for more exemple go to [github](https://github.com/Sosso8305/GIF-Dijkstra-Python)
 
+
+
+# Change Log 
+
+## 0.0.7
+change documentation FR to EN
+
+## 0.0.5
+first realese that works well

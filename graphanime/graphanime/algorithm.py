@@ -457,7 +457,19 @@ def Kruskal(Graph):
 # #########################################################
 
 # L'algorythme marche différemment en cas de graph orienté et non orienté, si un graph est orienté alors attention : en cas d'arrete notre algorythme les transformera en double arc, mais pas très joliment
-def Floyd_Warshall(Graph):
+def Floyd_Warshall(Graph, exploration_color='red', is_being_modified_color='green', has_been_modified_color='pink'):
+    """This algorythm gives the shortest distance between every node of the graph.
+    Beware ! This algorythm does not work the same way for an oriented and not oriented graph, in an oriented graph : non oriented edges will be converted to double arcs, not beautifully.
+
+    Args:
+        Graph (Graph): The Graph to explore
+        exploration_color (str, optional): The color given to edges being tested as shortcuts. Defaults to 'red'.
+        is_being_modified_color (str, optional): The color given to edges being modified. Defaults to 'green'.
+        has_been_modified_color (str, optional): The color given to edges which has been modified . Defaults to 'pink'.
+
+    Returns:
+        list(Graph): The list of each state of the graph during the application of the algorythm
+    """
     oriented = False
     for e in Graph.E:
         if Graph.orientation[e]!='-':
@@ -529,13 +541,13 @@ def Floyd_Warshall(Graph):
                 tmp_color1=Graph.color[shortcut1]
                 tmp_color2=Graph.color[shortcut2]
                 tmp_contour=Graph.contour_color[k]
-                Graph.color[shortcut1]='red'
-                Graph.color[shortcut2]='red'
-                Graph.contour_color[k]='red'
+                Graph.color[shortcut1]=exploration_color
+                Graph.color[shortcut2]=exploration_color
+                Graph.contour_color[k]=exploration_color
                 modified =False
                 if path not in Graph.edge_label.keys() or int(Graph.edge_label[path]) > int(dist):
                     Graph.edge_label[path] = dist
-                    Graph.color[path]='green'
+                    Graph.color[path]=is_being_modified_color
                     modified = True
                 liste_graphes.append(Graph.copy())
                 Graph.color[shortcut1]=tmp_color1
@@ -543,6 +555,6 @@ def Floyd_Warshall(Graph):
                 Graph.contour_color[k]=tmp_contour
                 if not tmp_contour:
                     Graph.contour_color.pop(k)
-                if modified: Graph.color[path]='pink'
+                if modified: Graph.color[path]=has_been_modified_color
     liste_graphes.append(Graph)
     return liste_graphes

@@ -91,11 +91,18 @@ And for more exemple go to [github](https://github.com/Sosso8305/LaTeX-to-GIF-Py
 
 
 # Change Log 
+
+## 0.0.9
+- add Kruskal algorithm
+- add Floyd-Warshall algorithm
+- add Ford-Fulkerson algorithm
+- fix bug: the parser in funct load() take well the other_option of edge
+- update template  
 ## 0.0.8
-change name github project 
+- change name github project 
 
 ## 0.0.7
-change documentation FR to EN
+- change documentation FR to EN
 
 ## 0.0.5
-first realese that works well
+- first realese that works well

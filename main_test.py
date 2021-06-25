@@ -37,7 +37,7 @@ def gen_floyd_warshall2():
     
 def all_gen_FordFulkerson():
     x = load('Exemples/exemple_fordfulkerson.tex')
-    A = FordFulkerson(x)
+    A = FordFulkerson(x, x.V[0], x.V[-1])
     gen_beamer(A,"FordFulkerson_beamer")
     gen_pdf(A,"FordFulkerson")
     gen_gif(A,"FordFulkerson",700)

@@ -1,7 +1,7 @@
 from heapq import heappop, heappush
 from collections import defaultdict
 
-INFINI = "$\infty$"
+INFINITE = "$\infty$"
 DEBUG = False
 
 __all__ = ['Dijstra','BellmanFord', 'FordFulkerson','Kruskal', 'Floyd_Warshall']
@@ -10,156 +10,179 @@ __all__ = ['Dijstra','BellmanFord', 'FordFulkerson','Kruskal', 'Floyd_Warshall']
 # ############# Dijkstra ALGORYTHM #############
 # #########################################################
 
-def Dijkstra(Graph,source,sink):
+def Dijkstra(Graph,source,sink, not_explored_node_color="grey!50", default_edge_color="black", begin_color="red!50", end_color="red!50", current_node_color="red", current_edge_color="green", default_label_color="black", better_way_label_color="green", no_better_way_label_color="red", explored_node_color="black", final_path_color="blue"):
+    """
+    Application of the Ford-Fulkerson algorithm, to find the maximum flow from the source node to the target.
+    Actually, this specific function colors and changes labels of the graph to illustrate the algorithm.
+    It returns a list containing the different states of the graph.
+
+    Args:
+        Graph (class Graph): The graph on which the algorithm will be applied.
+        source (String): Name of the source node.
+        sink (String): Name of the well node.
+        not_explored_node_color (str, optional): Color for nodes that have not already been explored. Defaults to "grey!50".
+        default_edge_color (str, optional): Default color for edges, when they are not explored. Defaults to "black".
+        begin_border_color (str, optional): Color of the border surrounding the initial node. Defaults to "red!50".
+        end_border_color (str, optional): Color of the border surrounding the final node. Defaults to "red!50".
+        current_edge_color (str, optional): Color of the edge that is currently explored. Defaults to "green".
+        current_node_color (str, optional): Color of the node that is currently explored. Defaults to "red".
+        default_label_color (str, optional): Default color for node labels. Defaults to "black".
+        better_way_label_color (str, optional): Color for node labels when the algorithm has found an improving way. Defaults to "green".
+        no_better_way_label_color (str, optional): Color for node labels when the algorithm has not found any improving way. Defaults to "red".
+        explored_node_color (str, optional): Color of the nodes that have been explored. This color immediatly succeeds to 'current_edge_color'. Defaults to "black".
+        final_path_color (str, optional): Color of the edges in the final path from source to sink, computed by the algorithm. Defaults to "blue".
+
+    Returns:
+        [List]: List containing the differents states of the graph, like "frames". Each time a change is made, a copy of the graph is saved in the list.
+    """
     for e in Graph.E:
         if int(Graph.edge_label[e]) <= 0:
             print(f"Arete {e} de poids inferieur ou egal a 0. L'algorithme de Dijkstra ne traite pas ce cas : referez-vous au Bellman-Ford")
             return [Graph]
 
-    liste_graphes = [] # Liste contenant tous les états du graphe
-    Graph_copy = Graph.copy() # On travaille sur une copie
-    distance_from_source = 0 # Distance du noeud d'origine au noeud actuellement étudié
-    priority_queue = [] # Liste des noeuds à traiter. Celui avec la distance au noeud source la plus faible sort en premier
+    graph_list = [] # List containing the differents states of the graph
+    Graph_copy = Graph.copy() # The algorithm works on a copy of the graph
+    distance_from_source = 0 # Distance between source node and sink node
+    priority_queue = [] # LIFO list containing the nodes that must be explored. The one with the smallest distance to the source node goes out first
     
+    # Default syntax values
     for v in Graph_copy.V:
-        Graph_copy.fill[v] = "grey!50"
-        Graph_copy.label[v] = INFINI
+        Graph_copy.fill[v] = not_explored_node_color
+        Graph_copy.label[v] = INFINITE
     for e in Graph_copy.E:
-        Graph_copy.color[e] = "black"
-    Graph_copy.contour_color[source] = "red!50"
-    Graph_copy.contour_color[sink] = "red!50"
+        Graph_copy.color[e] = default_edge_color
+    Graph_copy.contour_color[source] = begin_color
+    Graph_copy.contour_color[sink] = end_color
 
-    heappush(priority_queue, (0, source, [])) # Je mets dans ma file de priorités un tuple avec le noeud source, la valeur 0 (car distance de source à source = 0) et une liste vide (le chemin du noeud source au noeud source est une liste vide)
-    Graph_copy.label[source] = str(0) # Le label tel que défini dans la classe Node contient la distance depuis le noeud source
-    liste_graphes.append(Graph_copy.copy())
-    if DEBUG: print("couleur, dans le graphe, du noeud ", source, " colorie : ", Graph_copy.fill[source])
+    heappush(priority_queue, (0, source, [])) # In the list, we push a tuple. The first one contains 0 (= distance from source to source), the source node and an empty list (the path from source to source)
+    Graph_copy.label[source] = str(0) # The label of the node (which is a string) contains, in this algorithm, the distance from the source node. Its value is 0 for the source node
+    graph_list.append(Graph_copy.copy())
+    if DEBUG: print("Node ", source, ": color: ", Graph_copy.fill[source])
 
-    # On ne traite pas les noeuds ni les arêtes déjà explorés
-    noeud_explores = []
-    aretes_explorees = []
+    # The algorithm does not explore nodes nor edges that have already been explored
+    explored_nodes = []
+    explored_edges = []
 
     i = 0
-    while(priority_queue): # Tant que la file n'est pas vide
+    while(priority_queue): # While there is a node to explore
         if DEBUG:
             print("=" * 50)
-            for elt in priority_queue:
-                print("Boucle ", i, "\tElement de la liste : ", priority_queue)
+            print("Loop ", i, "\tElements in priority queue: ", priority_queue)
         i += 1
 
-        (distance_from_source, noeud, parcours) = heappop(priority_queue) # On récupère le noeud à traiter (celui qui est le plus proche de la source), le parcours pour y arriver, et la longueur du trajet
-        if DEBUG: print("Noeud sorti : ", noeud, "\tPriorite : ", distance_from_source, "\tParcours : ", parcours)
-        if noeud not in noeud_explores:
-            Graph_copy.fill[noeud] = "red" # On colore le noeud actuellement étudié
-            liste_graphes.append(Graph_copy.copy())
-            if(noeud == sink): # Si c'est le noeud objectif, on arrête l'exécution de l'algorithme
-                Graph_copy.fill[noeud] = "black"
-                noeud_explores.append(noeud)
-                parcours.append(noeud)
-                liste_graphes.append(Graph_copy.copy())
+        (distance_from_source, node, path) = heappop(priority_queue) # Sorts the node to be treated (the one that is closest to the source), the path from the source to the node, and the distance from the source
+        if DEBUG: print("Sorted node: ", node, "\Priority: ", distance_from_source, "\tParcours : ", path)
+        if node not in explored_nodes:
+            Graph_copy.fill[node] = current_node_color # Colors the currently treated node
+            graph_list.append(Graph_copy.copy())
+            if(node == sink): # If the treated node is the goal defined by the user, the algorithm stops its execution
+                Graph_copy.fill[node] = explored_node_color # The goal node is colored as an explored node
+                explored_nodes.append(node)
+                path.append(node)
+                graph_list.append(Graph_copy.copy())
                 break
             
             for e in Graph_copy.E:
                 if DEBUG:
-                    print("noeuds explores : ", noeud_explores)
+                    print("Explored nodes: ", explored_nodes)
                     print("\t" + "*" * 50)
-                    print("\tArete : ", e)
-                    print("\tNoeud en cours : ", noeud)
-                    print(f"\tCondition e[0] = {noeud == e[0]}, Condition e[1] = {noeud == e[1]}, Condition orientation = {Graph_copy.orientation[e] == '-'}, Condition noeud explore = {noeud not in noeud_explores}, Condition arete exploree = {e not in aretes_explorees}")
-                if e not in aretes_explorees and ((noeud == e[0] and (Graph_copy.orientation[e] == '-' or Graph_copy.orientation[e] == '->')) or (noeud == e[1] and (Graph_copy.orientation[e] == '-' or Graph_copy.orientation[e] == '<-'))):
-                    # Cette condition permet de s'assurer que :
-                    #     1/ Le noeud n'a pas déjà été étudié
-                    #     2/ Le noeud étudié est dans l'arête nommée 'e' :
-                    #         a/ Soit on a une arête x--y, et noeud étudié = x ou y
-                    #         b/ Soit on a une arête x->y, et noeud étudié = x
-                    #         c/ Soit on a une arête x<-y, et noeud étudié = y
+                    print("\tEdges : ", e)
+                    print("\tCurrent nodes: ", node)
+                    print(f"\tCondition e[0] = {node == e[0]}, Condition e[1] = {node == e[1]}, Condition orientation = {Graph_copy.orientation[e] == '-'}, Condition explored node = {node not in explored_nodes}, Condition explored edge  = {e not in explored_edges}")
+                if e not in explored_edges and ((node == e[0] and (Graph_copy.orientation[e] == '-' or Graph_copy.orientation[e] == '->')) or (node == e[1] and (Graph_copy.orientation[e] == '-' or Graph_copy.orientation[e] == '<-'))):
+                    # This condition asserts that:
+                    #     1/ The node has not already been treated
+                    #     2/ The currently explored node is in the graph:
+                    #         a/ Either the edge is x--y, and explored node = x or y
+                    #         b/ Or the edge is x->y, and explored node = x
+                    #         c/ Or the edge is x<-y, and explored node = y
                     if DEBUG:
                         print("\t\t" + "-" * 50)
-                        print("\t\tJe suis dans le if")
                         print(f"\t\te[0] = {e[0]}, e[1] = {e[1]}, orientation = {Graph_copy.orientation[e]}")
                     
-                    # On colore l'arête actuellement étudiée en vert. 
-                    # Si l'arête n'est pas orientée, on l'oriente pour rendre la lecture plus facile
-                    Graph_copy.color[e] = "green"
+                    # The currently treated edge is colored 
+                    # If the edge is not already oriented, the algorithm orientates it to make the animation easier to read
+                    Graph_copy.color[e] = current_edge_color
                     if Graph_copy.orientation[e] == '-':
-                        if noeud == e[0]:
+                        if node == e[0]:
                             Graph_copy.orientation[e] = '->'
                         else:
                             Graph_copy.orientation[e] = '<-'
-                    liste_graphes.append(Graph_copy.copy())
+                    graph_list.append(Graph_copy.copy())
 
-                    if DEBUG: print(f"\t\tnoeud = {noeud}, e[0] : {e[0]}, e[1] : {e[1]}")
+                    if DEBUG: print(f"\t\tnode = {node}, e[0] : {e[0]}, e[1] : {e[1]}")
 
-                    # On définit, pour une arête donnée, le voisin du noeud actuellement étudié
-                    if noeud == e[0]:
-                        voisin = e[1]
+                    # For a given edge, we must define the neighbour of the currently explored node
+                    if node == e[0]:
+                        neighbour = e[1]
                     else:
-                        voisin = e[0]
+                        neighbour = e[0]
                     
-                    # On remplace le label du noeud voisin par '?' pour montrer que c'est sur lui que porte l'étude
-                    ancien_label = Graph_copy.label[voisin]
-                    Graph_copy.label[voisin] = "?"
-                    liste_graphes.append(Graph_copy.copy())
+                    # The treated neighbour's label is changed: now it contains '?', to emphasize that the algorithm determines if the current path (from the source to this neighbour) is better than the previous one
+                    old_label = Graph_copy.label[neighbour]
+                    Graph_copy.label[neighbour] = "?"
+                    graph_list.append(Graph_copy.copy())
 
                     if DEBUG:
                         print("\t\t\t" + "o" * 50)
-                        print(f"\t\t\tnoeud = {noeud}, voisin = {voisin}")
-                        print(f"\t\t\tlabel du noeud : {Graph_copy.label[noeud]}, label du voisin : {ancien_label}, distance + poids : {distance_from_source + int(Graph_copy.edge_label[e])}")
+                        print(f"\t\t\tnode = {node}, neighbour = {neighbour}")
+                        print(f"\t\t\tnode label: {Graph_copy.label[node]}, neighbour's label: {old_label}, distance + weight: {distance_from_source + int(Graph_copy.edge_label[e])}")
 
-                    if (ancien_label == INFINI) or (distance_from_source + int(Graph_copy.edge_label[e]) < int(ancien_label)): # Comme le label est un string, il faut le passer en int
-                        # Si on trouve un chemin améliorant, on montre que ce chemin est plus court que celui qui était jusque là retenu
-                        # On colore le label en vert, et on y inscrit la nouvelle valeur
-                        # De plus, on ajoute ce noeud dans la file, avec le parcours nécessaire jusque là
-                        Graph_copy.label_color[voisin] = "green"
-                        Graph_copy.label[voisin] = ancien_label + " $>$ " + str(distance_from_source) + " + " + Graph_copy.edge_label[e]
-                        liste_graphes.append(Graph_copy.copy())
-                        Graph_copy.label[voisin] = str(distance_from_source + int(Graph_copy.edge_label[e]))
-                        chemin = parcours + [noeud]
-                        heappush(priority_queue, (int(Graph_copy.label[voisin]), voisin, chemin))
+                    if (old_label == INFINITE) or (distance_from_source + int(Graph_copy.edge_label[e]) < int(old_label)): # As label is a string, it must be converted to int
+                        # If an improving path is found, it is written in the label that this path is shorter than the one previously chosen
+                        # We colour the label with better_way_label_color, and write the new value
+                        # In addition, we add this node to the queue, along with the path required so far
+                        Graph_copy.label_color[neighbour] = better_way_label_color
+                        Graph_copy.label[neighbour] = old_label + " $>$ " + str(distance_from_source) + " + " + Graph_copy.edge_label[e]
+                        graph_list.append(Graph_copy.copy())
+                        Graph_copy.label[neighbour] = str(distance_from_source + int(Graph_copy.edge_label[e]))
+                        chemin = path + [node]
+                        heappush(priority_queue, (int(Graph_copy.label[neighbour]), neighbour, chemin))
                     else:
-                        # Sinon, on  colore le label en rouge, et on garde l'ancienne valeur
-                        Graph_copy.label_color[voisin] = "red"
-                        Graph_copy.label[voisin] = ancien_label + " $<$ " + str(distance_from_source) + " + " + Graph_copy.edge_label[e]
-                        liste_graphes.append(Graph_copy.copy())
-                        Graph_copy.label[voisin] = ancien_label
+                        # Else, we colour the label with better_way_label_color, and keep the old value
+                        Graph_copy.label_color[neighbour] = no_better_way_label_color
+                        Graph_copy.label[neighbour] = old_label + " $<$ " + str(distance_from_source) + " + " + Graph_copy.edge_label[e]
+                        graph_list.append(Graph_copy.copy())
+                        Graph_copy.label[neighbour] = old_label
                         
 
-                    # On réinitialise l'arête à son état avant traitement
-                    Graph_copy.color[e] = "black"
+                    # The edge is reset to its state before treatment
+                    Graph_copy.color[e] = default_edge_color
                     if(Graph.orientation[e] == '-'):
                         Graph_copy.orientation[e] = '-'
-                    aretes_explorees.append(e)
-                    liste_graphes.append(Graph_copy.copy())
-                    Graph_copy.label_color[voisin] = "black"
-                    liste_graphes.append(Graph_copy.copy())
+                    explored_edges.append(e)
+                    graph_list.append(Graph_copy.copy())
+                    Graph_copy.label_color[neighbour] = default_label_color
+                    graph_list.append(Graph_copy.copy())
                             
-            # On ajoute le noeud à la liste des noeuds déjà étudiés, et on le colore en noir pour montrer qu'on a fini
-            noeud_explores.append(noeud)
-            Graph_copy.fill[noeud] = "black"
-            parcours.append(noeud)
-            liste_graphes.append(Graph_copy.copy())
+            # The node is added to the lists of explored nodes and is coloured with explored_node_color
+            explored_nodes.append(node)
+            Graph_copy.fill[node] = explored_node_color
+            path.append(node)
+            graph_list.append(Graph_copy.copy())
 
     if DEBUG: 
         print("=" * 50)
-        print("Parcours final : ", parcours)
+        print("Parcours final : ", path)
     
-    # Dans la liste 'parcours', on a noté les noeuds par lesquels il fallait passer.
-    # Maintenant, on transforme cette suite de noeuds en suite d'arêtes
-    # On colore en bleu les arêtes du plus court chemin trouvé grâce à l'algorithme, et on les oriente
-    arete_chemin = []
-    for i in range(len(parcours) - 1):
-        arete_chemin.append((parcours[i],parcours[i+1]))
-    if DEBUG: print (arete_chemin)
-    for e in arete_chemin:
+    # In the 'path' list, we have noted the nodes through which we must pass.
+    # Now, we transform this sequence of nodes into a sequence of edges
+    # We colour with final_path_color the edges of the shortest path found thanks to the algorithm, and we orient them
+    edges_of_path = []
+    for i in range(len(path) - 1):
+        edges_of_path.append((path[i],path[i+1]))
+    if DEBUG: print (edges_of_path)
+    for e in edges_of_path:
         if DEBUG: print("e1",e[1],"e0", e[0])
         if e in Graph_copy.E:
-            Graph_copy.color[e] = "blue"
+            Graph_copy.color[e] = final_path_color
             Graph_copy.orientation[e] = '->'
         elif((e[1], e[0]) in Graph_copy.E and Graph_copy.orientation[(e[1], e[0])] == '-'):
-            Graph_copy.color[(e[1], e[0])] = "blue"
+            Graph_copy.color[(e[1], e[0])] = final_path_color
             Graph_copy.orientation[(e[1], e[0])] = '<-'
-    liste_graphes.append(Graph_copy.copy())
+    graph_list.append(Graph_copy.copy())
     
-    return liste_graphes
+    return graph_list
 
 
 def BellmanFord(Graph,source):
@@ -183,18 +206,18 @@ def BellmanFord(Graph,source):
     # Initialisation graphique
     for v in Graph_copy.V:
         Graph_copy.fill[v] = "grey!50"
-        Graph_copy.label[v] = INFINI
+        Graph_copy.label[v] = INFINITE
     for e in Graph_copy.E:
         Graph_copy.color[e] = "black"
     liste_graphes.append(Graph_copy.copy())
-    if DEBUG: print("couleur, dans le graphe, du noeud ", source, " colorie : ", Graph_copy.fill[source])
+    if DEBUG: print("couleur, dans le graphe, du node ", source, " colorie : ", Graph_copy.fill[source])
 
     # Début (mathématique)
     distances = {}
     predecesseurs = {}
-    for noeud in graph :
-        distances[noeud] = 'infini'
-        predecesseurs[noeud] = None
+    for node in graph :
+        distances[node] = 'infini'
+        predecesseurs[node] = None
     distances[source]= 0
 
     # Corps
@@ -217,20 +240,37 @@ def BellmanFord(Graph,source):
 # ######### METHODS FOR FORD-FULKERSON ALGORITHM ##########
 # #########################################################
 class Stack:
-    "A container with a last-in-first-out (LIFO) queuing policy."
+    """
+    A container with a last-in-first-out (LIFO) queuing policy.
+    """
     def __init__(self):
         self.list = []
 
     def push(self,item):
-        "Push 'item' onto the stack"
+        """
+        Push 'item' onto the stack
+
+        Args:
+            item ([Node]): node that will be pushed on the stack
+        """
         self.list.append(item)
 
     def pop(self):
-        "Pop the most recently pushed item from the stack"
+        """
+        Pop the most recently pushed item from the stack
+
+        Returns:
+            [Node]: The last item (in this case, the last node) that has been pushed on the stack
+        """
         return self.list.pop()
 
     def isEmpty(self):
-        "Returns true if the stack is empty"
+        """
+        Returns true if the stack is empty
+
+        Returns:
+            [Boolean]: 'True' if the size of the stack is 0, 'False' else
+        """
         return len(self.list) == 0
 
 def getSuccessors(Graph, source):
@@ -255,13 +295,18 @@ def getPredecessors(Graph, source):
 
 def depthFirstSearch(Graph, source, target, flow, capacity):
     """
-    Search the deepest nodes in the search tree first.
+    Implementation of the Depth-First Search algorithm. 
+    Its purpose is to find a path from the source to the target through the Graph, dealing with flow and capacity constraints
 
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
+    Args:
+        Graph ([class Graph]): Contains the graph on which the algorithm will be applied
+        source ([Node]): Initial node of the path 
+        target ([Node]): Final node of the path 
+        flow ([Dictionary]): Associates to each edge the current flow
+        capacity ([Dictionary]): Associates to each edge the maximum supported flow
 
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
+    Returns:
+        [List]: List giving a correct path (according to the constraints of flow and capacity) from the source to the target
     """
 
     border = Stack() 
@@ -302,29 +347,53 @@ def depthFirstSearch(Graph, source, target, flow, capacity):
             return None
 
 
+def FordFulkerson(Graph, source, well, disp_flow=False, not_explored_node_color="grey!50", default_edge_color="black", begin_border_color="red!50", end_border_color="red!50", current_edge_color="green", saturated_edge_color="red!25", saturated_edge_option="dashed"):
+    """
+    Application of the Ford-Fulkerson algorithm, to find the maximum flow from the source node to the target.
+    Actually, this specific function colors and changes labels of the graph to illustrate the algorithm.
+    It returns a list containing the different states of the graph.
 
+    Args:
+        Graph (class Graph): The graph on which the algorithm will be applied.
+        source (String): Name of the source node. The graph must admit a "source node", it says a node from which there are only outgoing edges.
+        well (String): Name of the well node. The graph must admit a "well node", it says a node from which there are only incoming edges
+        disp_flow (bool, optional): If True, displays the maximum flow of the graph in the shell. Defaults to False.
+        not_explored_node_color (str, optional): Color for nodes that have not already been explored. Defaults to "grey!50".
+        default_edge_color (str, optional): Standard color for edges, when they are not explored. Defaults to "black".
+        begin_border_color (str, optional): Color of the border surrounding the initial node. Defaults to "red!50".
+        end_border_color (str, optional): Color of the border surrounding the final node. Defaults to "red!50".
+        current_edge_color (str, optional): Color of the edges in the chosen path. Defaults to "green".
+        saturated_edge_color (str, optional): Color of the saturated edges. Defaults to "red!25".
+        saturated_edge_option (str, optional): Option to distinguish the saturated edges. Defaults to "dashed".
 
-def FordFulkerson(Graph):
+    Returns:
+        [List]: List containing the differents states of the graph, like "frames". Each time a change is made, a copy of the graph is saved in the list.
+    """
+    # Dictionaries indexed by the edges. 
+    # Capacity will not be changed during the execution. 
+    # Flow is first set to 0, and during the algorithm it will stock the values of the flows on each edge
     flow = {arete : 0 for arete in Graph.E}
     capacity = {arete : int(Graph.edge_label[arete]) for arete in Graph.E}
+    # List containing the differents states of the graph
     graph_list = []
 
     Graph_copy = Graph.copy()
+    # Default syntax values
     for v in Graph_copy.V:
-        Graph_copy.fill[v] = "grey!50"
+        Graph_copy.fill[v] = not_explored_node_color
     for e in Graph_copy.E:
-        Graph_copy.color[e] = "black"
-    Graph_copy.contour_color[Graph_copy.V[0]] = "red!50"
-    Graph_copy.contour_color[Graph_copy.V[-1]] = "red!50"
+        Graph_copy.color[e] = default_edge_color
+    Graph_copy.contour_color[source] = begin_border_color
+    Graph_copy.contour_color[well] = end_border_color
     graph_list.append(Graph_copy.copy())
 
-    better_way_nodes = depthFirstSearch(Graph_copy, Graph_copy.V[0], Graph_copy.V[-1], flow, capacity)
-    while(better_way_nodes):
+    better_way_nodes = depthFirstSearch(Graph_copy, source, well, flow, capacity)
+    while(better_way_nodes): # While the depthFirstSearch function finds a path through the graph
         if DEBUG:
             print("=" * 50)
-            print("Chemin trouvé : ", better_way_nodes)
-            print("Flots avant execution : ", flow)
-        better_way_edges = []
+            print("Chosen path: ", better_way_nodes)
+            print("Flows before execution: ", flow)
+        better_way_edges = [] # The depthFirstSearch function returns a sequence of nodes, that must be transformed into a sequence of edges
         for i in range(len(better_way_nodes) - 1):
             better_way_edges.append((better_way_nodes[i],better_way_nodes[i+1]))
         
@@ -332,16 +401,19 @@ def FordFulkerson(Graph):
         edges_to_lower = []
         for edge in better_way_edges:
             if edge in Graph_copy.E:
+                # If the edge is in the graph, its current flow will be increased
                 edges_to_increase.append(edge)
             elif (edge[1], edge[0]) in Graph_copy.E:
+                # If the edge is in the graph but in the opposite direction, its current flow will be lowered
                 edges_to_lower.append((edge[1], edge[0]))
 
         for e in edges_to_increase + edges_to_lower:
-            Graph_copy.color[e] = "green"
+            Graph_copy.color[e] = current_edge_color # The edges in the chosen path are coloured
         graph_list.append(Graph_copy.copy())            
         
         flow_of_way = min([capacity[e] - flow[e] for e in edges_to_increase] + [flow[e] for e in edges_to_lower])
 
+        # Increasing or lowering flow on edges
         for e in edges_to_increase:
             flow[e] += flow_of_way
         for e in edges_to_lower:
@@ -349,26 +421,30 @@ def FordFulkerson(Graph):
 
         for e in Graph_copy.E:
             Graph_copy.edge_label[e] = str(capacity[e] - flow[e])
-        
         graph_list.append(Graph_copy.copy())
 
         for e in Graph_copy.E:
             if(capacity[e] - flow[e] == 0):
-                Graph_copy.edge_options[e] = "dashed"
-                Graph_copy.color[e] = "red!25"
+                Graph_copy.edge_options[e] = saturated_edge_option
+                Graph_copy.color[e] = saturated_edge_color
             else:
-                Graph_copy.color[e] = "black"
+                Graph_copy.color[e] = default_edge_color
 
         graph_list.append(Graph_copy.copy())
 
         if DEBUG:
-            print("Flots apres execution : ", flow)
-            print("Capacites : ", capacity)
+            print("Flows after execution: ", flow)
+            print("Capacities :", capacity)
 
-        better_way_nodes = depthFirstSearch(Graph_copy, Graph_copy.V[0], Graph_copy.V[-1], flow, capacity)
+        better_way_nodes = depthFirstSearch(Graph_copy, source, well, flow, capacity)
 
+    # Computing the maximum flow accepted by the graph. By default it is not displayed, but it can be if the user sets disp_flow to 'True'
+    max_flow = 0
+    successors = getSuccessors(Graph_copy, source)
+    for neighbour in successors:
+        max_flow += flow[(source, neighbour)]
+    if disp_flow: print("Maximum flow : ", max_flow)
 
-    graph_list[0].preambule += "\n\\usepackage{ulem}"
     return graph_list
     
 

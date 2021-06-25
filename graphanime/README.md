@@ -85,7 +85,7 @@ it's Back-end for APNG with a source is list of graph (anim)
     A = Dijkstra(x, "node 1", "node 5")
     gen_gif(A, "versusWiki",700)
 ```
-And for more exemple go to [github](https://github.com/Sosso8305/GIF-Dijkstra-Python)
+And for more exemple go to [github](https://github.com/Sosso8305/LaTeX-to-GIF-Python)
 
 
 

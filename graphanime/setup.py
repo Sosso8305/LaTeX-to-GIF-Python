@@ -25,7 +25,7 @@ setup(
 
     include_package_data=True,
 
-    url='https://github.com/Sosso8305/GIF-Dijkstra-Python',
+    url='https://github.com/Sosso8305/LaTeX-to-GIF-Python',
 
     classifiers=[
         "Programming Language :: Python",

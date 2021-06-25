@@ -1,0 +1,40 @@
+\documentclass[tikz]{standalone}
+
+\usepackage{tikz}
+\usetikzlibrary{quotes}
+%\usepackage{}
+%\use...library{}
+
+%\tikzset{every figure} = []
+\begin{document}
+	\begin{tikzpicture} 
+		%\node (nom node) at(x,y) [options separées par virgules] {affichage} ;
+		\node () at(,) [] {} ;
+		\node () at(,) [] {} ;
+		
+%(nom node): charactères interdits: ( ) [ ] ; { } ,
+%at(x,y): optionel : x et y doivent être des coordonnées viables: des nombres 
+%[options séparées par virgules]:  les options du nœud. En détail certain: 			 
+	%fill=couleur
+	%label=texte du label ou label={texte du label} ou label={:texte du label}
+	%label={position du label:texte du label}
+	%label={[couleur du label]:texte du label}
+	%label={[couleur du label]position du label:texte du label}
+	%texte du label : charactères interdits: ; { } ,
+	%draw ou draw=
+	%draw=couleur{Affichage}: charactères interdits: { } [ ]; 
+	
+		%\path (nom node A) edge[options separées par virgules] (nom node B);
+		\path 
+		() edge[] ()
+		() edge[] ()
+		;
+
+%nom node: fait reference à un nom de nœud défini plus haut
+%[options séparées par virgules]:  les options de l’arrête/arc. En détail certain:
+	%-> ou <-ou -: le sens de l’arrête
+	%"edge_label": indication sur l’arrête, pour Dijkstra indique le poids, pour Dijkstra option obligatoire 
+	% edge_label : charactères interdits: ; , 
+	%color=couleur: la couleur de l’arrete.
+	\end{tikzpicture}
+\end{document}

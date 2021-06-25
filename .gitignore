@@ -1,0 +1,21 @@
+# Virtual environnement 
+.venv/*
+
+#file of LaTeX
+LaTeX/*
+
+#out file of LaTeX
+out/*
+
+# setting of VScode
+.vscode/*
+
+#compile file python
+__pycache__/*
+graphanime/graphanime/__pycache__/*
+
+#building module
+graphanime/build/*
+graphanime/dist/*
+graphanime/graphanime.egg-info/*
+

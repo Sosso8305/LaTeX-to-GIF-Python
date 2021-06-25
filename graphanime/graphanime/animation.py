@@ -163,6 +163,7 @@ def gen_beamer(anim,file,out_tex=False):
         subprocess.run(['pdflatex', '-interaction=batchmode', tex_filename])
 
         os.chdir(current_dir)
+        print("Nom du fichier pdf : ", pdf_filename)
         if os.path.exists(pdf_filename):
             shutil.copy2(pdf_filename,current_dir)
             if(out_tex):

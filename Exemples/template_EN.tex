@@ -1,0 +1,41 @@
+\documentclass[tikz]{standalone}
+
+\usepackage{tikz}
+\usetikzlibrary{quotes}
+%\usepackage{}
+%\use...library{}
+
+%\tikzset{every figure} = []
+\begin{document}
+	\begin{tikzpicture} 
+		%\node (name node) at(x,y) [options split by comma] {display} ;
+		\node () at(,) [] {} ;
+		\node () at(,) [] {} ;
+		
+%(name node): characters prohibited: ) [ ;
+%at(x,y): optional : x and y must to do a well coordonate : numbers 
+%[options split by comma]:  option of node. Few details: 			 
+	%fill=color
+	%label=text of label ou label={text of label} ou label={:text of label}
+	%label={position of label:text of label}
+	%label={[color du label]:text of label}
+	%label={[color du label]position of label:text of label}
+	%text of label : characters prohibited: ; { } ,
+	%draw ou draw=
+	%draw=color
+{Affichage}: charactères interdits: { ] ; 
+	
+		%\path (name node A) edge[options split by comma] (name node B);
+		\path 
+		() edge[] ()
+		() edge[] ()
+		;
+
+%name node: to reference  to name of node set upper
+%[options split by comma]:  options for edge/arc. Few details:
+	%-> or <-or -: way of edge
+	%"edge_label": indication on edge, for Dijkstra it's weight, for Dijkstra obligatory option 
+	% edge_label : characters prohibited: ; , "
+	%color=color: la color of edge
+	\end{tikzpicture}
+\end{document}

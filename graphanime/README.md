@@ -45,34 +45,35 @@ it's Back-end for APNG with a source is list of graph (anim)
 %\tikzset{every figure} = []
 \begin{document}
 	\begin{tikzpicture} 
-		%\node (nom node) at(x,y) [options separées par virgules] {affichage} ;
+		%\node (name node) at(x,y) [options split by comma] {display} ;
 		\node () at(,) [] {} ;
 		\node () at(,) [] {} ;
 		
-%(nom node): charactères interdits: ( ) [ ] ; { } ,
-%at(x,y): optionel : x et y doivent être des coordonnées viables: des nombres 
-%[options séparées par virgules]:  les options du nœud. En détail certain: 			 
-	%fill=couleur
-	%label=texte du label ou label={texte du label} ou label={:texte du label}
-	%label={position du label:texte du label}
-	%label={[couleur du label]:texte du label}
-	%label={[couleur du label]position du label:texte du label}
-	%texte du label : charactères interdits: ; { } ,
+%(name node): characters prohibited: ) [ ;
+%at(x,y): optional : x and y must to do a well coordonate : numbers 
+%[options split by comma]:  option of node. Few details: 			 
+	%fill=color
+	%label=text of label ou label={text of label} ou label={:text of label}
+	%label={position of label:text of label}
+	%label={[color du label]:text of label}
+	%label={[color du label]position of label:text of label}
+	%text of label : characters prohibited: ; { } ,
 	%draw ou draw=
-	%draw=couleur{Affichage}: charactères interdits: { } [ ]; 
+	%draw=color
+{Affichage}: charactères interdits: { ] ; 
 	
-		%\path (nom node A) edge[options separées par virgules] (nom node B);
+		%\path (name node A) edge[options split by comma] (name node B);
 		\path 
 		() edge[] ()
 		() edge[] ()
 		;
 
-%nom node: fait reference à un nom de nœud défini plus haut
-%[options séparées par virgules]:  les options de l’arrête/arc. En détail certain:
-	%-> ou <-ou -: le sens de l’arrête
-	%"edge_label": indication sur l’arrête, pour Dijkstra indique le poids, pour Dijkstra option obligatoire 
-	% edge_label : charactères interdits: ; , 
-	%color=couleur: la couleur de l’arrete.
+%name node: to reference  to name of node set upper
+%[options split by comma]:  options for edge/arc. Few details:
+	%-> or <-or -: way of edge
+	%"edge_label": indication on edge, for Dijkstra it's weight, for Dijkstra obligatory option 
+	% edge_label : characters prohibited: ; , "
+	%color=color: la color of edge
 	\end{tikzpicture}
 \end{document}
 
@@ -85,14 +86,29 @@ it's Back-end for APNG with a source is list of graph (anim)
     A = Dijkstra(x, "node 1", "node 5")
     gen_gif(A, "versusWiki",700)
 ```
-And for more exemple go to [github](https://github.com/Sosso8305/GIF-Dijkstra-Python)
+And for more exemple go to [github](https://github.com/Sosso8305/LaTeX-to-GIF-Python)
 
 
 
 # Change Log 
 
+## 0.1.0
+- fix parser (now it's take - )
+- change template FR to EN
+- add option color for all algotithm 
+- add documentation for Kruskal, Floyd-Warshall and Ford-Fulkerson
+
+## 0.0.9
+- add Kruskal algorithm
+- add Floyd-Warshall algorithm
+- add Ford-Fulkerson algorithm
+- fix bug: the parser in funct load() take well the other_option of edge
+- update template  
+## 0.0.8
+- change name github project 
+
 ## 0.0.7
-change documentation FR to EN
+- change documentation FR to EN
 
 ## 0.0.5
-first realese that works well
+- first realese that works well

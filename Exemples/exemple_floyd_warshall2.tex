@@ -1,0 +1,30 @@
+\documentclass[tikz]{standalone}
+
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{quotes}
+
+\tikzstyle{every picture} = [node distance=1.3cm]
+
+
+\begin{document} 
+        \begin{tikzpicture} 
+            \node (node 1) at(2,4) [circle,double, double distance =1.2pt,text=white,fill=blue!50,] {1};
+            \node (node 2) at(4,2) [circle,double, double distance =1.2pt,text=white,fill=blue!50,] {2};
+            \node (node 3) at(0,2) [circle,double, double distance =1.2pt,text=white,fill=blue!50,] {3};
+            \node (node 4) at(2,0) [circle,double, double distance =1.2pt,text=white,fill=blue!50,] {4};
+
+            
+            
+            
+            \path 	(node 1) edge[->,"-2"] (node 3)
+            		(node 3) edge[->,"2"] (node 4)
+            		(node 4) edge[->,"-1"] (node 2)
+            		(node 2) edge[->,"3"] (node 3)
+            		(node 2) edge[->,"4"] (node 1);
+            		
+            
+                  
+
+        \end{tikzpicture}
+\end{document}

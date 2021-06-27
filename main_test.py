@@ -19,18 +19,50 @@ def gen_wiki():
     gen_beamer(A, "versusWiki_beamer")
     gen_apng(A, "versusWiki")
    
+def gen_floyd_warshall():
+    x = load('Exemples/exemple_bellmanford.tex')
+    A = Floyd_Warshall(x)
+    gen_pdf(A, "warshall")
+    gen_gif(A, "warshall",1000)
+    gen_beamer(A, "warshall_beamer", True)
+    gen_apng(A, "warshall")
+
+def gen_floyd_warshall2():
+    x = load('Exemples/exemple_floyd_warshall2.tex')
+    A = Floyd_Warshall(x, bend='left')
+    #gen_pdf(A, "warshall")
+    gen_gif(A, "floyd_warshall",1000)
+    gen_beamer(A, "warshall_beamer2", True)
+    #gen_apng(A, "warshall")
+    
+def all_gen_FordFulkerson():
+    x = load('Exemples/exemple_fordfulkerson.tex')
+    A = FordFulkerson(x, x.V[0], x.V[-1])
+    gen_beamer(A,"FordFulkerson_beamer")
+    gen_pdf(A,"FordFulkerson")
+    gen_gif(A,"FordFulkerson",700)
+    gen_apng(A,"FordFulkerson",700)
+
+def gen_Kruskal():
+    x = load('Exemples/exemple_Kruskal.tex')
+    anim = Kruskal(x)
+    gen_gif(anim,"Kruskal")
+    gen_apng(anim,"Kruskal")
+
     
 
 def test():
-    y = load("Exemples/test.tex")
-    B = [y, y]
-    gen_beamer(B, "test")
+    y = load("Exemples/exemple_fordfulkerson.tex")
+    B = FordFulkerson(y)
+    gen_beamer(B, "FordFulkerson")
 
 
 
 if __name__ == "__main__":
    
+    # all_gen_FordFulkerson()  
     # all_gen_Dijkstra()
-    gen_wiki()
-    
-    
+    # gen_wiki()
+    # gen_floyd_warshall()
+    gen_Kruskal()
+    #gen_floyd_warshall2()

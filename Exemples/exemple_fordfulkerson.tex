@@ -9,8 +9,10 @@
 \begin{document}
 	\begin{tikzpicture} 
 		%\node (nom node) at(x,y) [options separées par virgules] {affichage} ;
-		\node () at(,) [] {} ;
-		\node () at(,) [] {} ;
+		\node (node 1) at(0, 1) [circle,double, double distance =1.2pt,text=white,fill=blue!50,] {S} ;
+		\node (node 2) at(2, 0) [circle,double, double distance =1.2pt,text=white,fill=blue!50,] {V} ;
+		\node (node 3) at(2, 2) [circle,double, double distance =1.2pt,text=white,fill=blue!50,] {U} ;
+		\node (node 4) at(4, 1) [circle,double, double distance =1.2pt,text=white,fill=blue!50,] {T} ;
 		
 %(nom node): charactères interdits: ( ) [ ] ; { } ,
 %at(x,y): optionel : x et y doivent être des coordonnées viables: des nombres 
@@ -26,8 +28,11 @@
 	
 		%\path (nom node A) edge[options separées par virgules] (nom node B);
 		\path 
-		() edge[] ()
-		() edge[] ()
+		(node 1) edge[->,"2"] (node 2)
+		(node 1) edge[->,"4"] (node 3)
+		(node 3) edge[->,"3"] (node 2)
+		(node 3) edge[->,"1"] (node 4)
+		(node 2) edge[->,"6"] (node 4)
 		;
 
 %nom node: fait reference à un nom de nœud défini plus haut

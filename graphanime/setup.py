@@ -8,11 +8,11 @@ setup(
 
     name='graphanime',
     
-    version="0.0.7",
+    version="0.1.0",
 
     packages=find_packages(),
 
-    author= "ALTAVILLA Théo / DUPLAN Xavier / EL RAWAS Gaëthan / ZOUAOUI Sofiane / help of INSA CVL",
+    author= "ALTAVILLA Théo / DUPLAN Xavier / EL RAWAS Gaëthan / ZOUAOUI Sofiane",
 
     author_email = "sofiane.zouaoui@insa-cvl.fr",
 
@@ -25,7 +25,7 @@ setup(
 
     include_package_data=True,
 
-    url='https://github.com/Sosso8305/GIF-Dijkstra-Python',
+    url='https://github.com/Sosso8305/LaTeX-to-GIF-Python',
 
     classifiers=[
         "Programming Language :: Python",

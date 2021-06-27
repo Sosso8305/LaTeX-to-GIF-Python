@@ -4,7 +4,7 @@ from collections import defaultdict
 INFINITE = "$\infty$"
 DEBUG = False
 
-__all__ = ['Dijstra', 'FordFulkerson','Kruskal', 'Floyd_Warshall']
+__all__ = ['Dijstra','BellmanFord', 'FordFulkerson','Kruskal', 'Floyd_Warshall']
 
 # #########################################################
 # ############# Dijkstra ALGORYTHM #############

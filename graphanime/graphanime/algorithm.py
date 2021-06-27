@@ -192,16 +192,6 @@ def BellmanFord(Graph,source):
     Graph_copy = Graph.copy()
     Graph_copy.label[source] = str(0) # Distance source à source = 0
     graph = defaultdict(dict)
-    for (A,B) in Graph_copy.E :
-        graph[A][B] = None
-        graph[B][A] = None
-    for i in graph :
-        for j in graph[i]:
-            for e in Graph_copy.E :
-                if (i,j) == e:
-                    graph[i][j] = Graph_copy.edge_label[e]
-                elif (j,i) == e:
-                    graph[i][j] = Graph_copy.edge_label[e]
 
     # Initialisation graphique
     for v in Graph_copy.V:
@@ -209,31 +199,163 @@ def BellmanFord(Graph,source):
         Graph_copy.label[v] = INFINITE
     for e in Graph_copy.E:
         Graph_copy.color[e] = "black"
-    liste_graphes.append(Graph_copy.copy())
-    if DEBUG: print("couleur, dans le graphe, du node ", source, " colorie : ", Graph_copy.fill[source])
+    Graph_copy.contour_color[source] = "red!50"
 
-    # Début (mathématique)
-    distances = {}
-    predecesseurs = {}
-    for node in graph :
-        distances[node] = 'infini'
-        predecesseurs[node] = None
-    distances[source]= 0
-
-    # Corps
-    for k in range(len(graph) - 1):
-        for i in graph :
-            for j in graph[i]:
-                if distances[j] > distances[i] + graph[i][j]:
-                    distances[j]  = distances[i] + graph[i][j]
-                    predecesseurs[j] = i
-    
+    # Construction dictionnaire voisin avec poids => {'noeud':{'voisin' : poids, ...}, ... }
+    for e in Graph_copy.E :
+        if Graph_copy.orientation[e] == '-' :
+            graph[e[0]][e[1]] = None
+            graph[e[1]][e[0]] = None
+        elif Graph_copy.orientation[e] == '->':
+            graph[e[0]][e[1]] = None
+            if e[1] not in graph.keys():
+                graph[e[1]] = {}
+        elif Graph_copy.orientation[e] == '<-' :
+            graph[e[1]][e[0]] = None
+            if e[0] not in graph.keys():
+                graph[e[0]] = {}
     for i in graph :
         for j in graph[i]:
-            if distances[j] <= distances[i] + graph[i][j]:
-                return "Donne un GRAPH QUI PEUT MARCHER!!!!!\n"
+            for e in Graph_copy.E :
+                if Graph_copy.orientation[e] == '-':
+                    if e == (i,j):
+                        graph[i][j] = int(Graph_copy.edge_label[e])
+                    elif e == (j,i):
+                        graph[i][j] = int(Graph_copy.edge_label[e])
+                elif Graph_copy.orientation[e] == '->': 
+                    if e == (i,j):
+                        graph[i][j] = int(Graph_copy.edge_label[e])
+                elif Graph_copy.orientation[e] == '<-': 
+                    if (e[1],e[0]) == (i,j):
+                        graph[i][j] = int(Graph_copy.edge_label[e]) 
+
+    if DEBUG : print(graph)
+
+    # Début 
+    negative_cycle = False
+    distances = {}
+    predecesseurs = {}
+    for noeud in graph :
+        distances[noeud] = INFINITE
+        predecesseurs[noeud] = None
+    distances[source]= 0
+    Graph_copy.label[source] = 0
+    if DEBUG : print(distances)
+    liste_graphes.append(Graph_copy.copy())
+
+    # Corps
+    ancien_j = None
+    ancien_e = None
+    for k in range(len(graph) - 1):
+        for i in graph : 
+            for j in graph[i]:
+                if (distances[i]!=INFINITE) and (distances[j]==INFINITE or (distances[j] > distances[i] + graph[i][j])):
+                    if ancien_j != None and ancien_e != None:
+                        Graph_copy.label_color[ancien_j] = "black"
+                        Graph_copy.fill[ancien_j] = "grey!50"
+                        Graph_copy.color[ancien_e] = "black"
+                        liste_graphes.append(Graph_copy.copy())
+                    Graph_copy.label_color[j] = "red"
+                    Graph_copy.label[j] = str(distances[j]) + " $>$ " + str(distances[i]) + " + " + str(graph[i][j])
+                    for e in Graph_copy.E :
+                        if Graph_copy.orientation[e] == '-':
+                            if e == (i,j):
+                                Graph_copy.color[e] = "red"
+                                ancien_e = e
+                            elif e == (j,i):
+                                Graph_copy.color[e] = "red"
+                                ancien_e = e
+                        elif Graph_copy.orientation[e] == '->': 
+                            if e == (i,j):
+                               Graph_copy.color[e] = "red"
+                               ancien_e = e
+                        elif Graph_copy.orientation[e] == '<-': 
+                            if e == (j,i):
+                               Graph_copy.color[e] = "red"
+                               ancien_e = e
+                    liste_graphes.append(Graph_copy.copy())
+                    distances[j] = distances[i] + graph[i][j]
+                    Graph_copy.label[j] = distances[j]
+                    Graph_copy.fill[j] = "red"
+                    liste_graphes.append(Graph_copy.copy())
+                    ancien_j = j
+                    predecesseurs[j] = i
+    Graph_copy.label_color[ancien_j] = "black"
+    Graph_copy.fill[ancien_j] = "grey!50"
+    Graph_copy.color[ancien_e] = "black"
+    liste_graphes.append(Graph_copy.copy())
+          
+    if DEBUG :
+        print(distances)
+        print(predecesseurs)
     
-    return distances, predecesseurs
+    # Detecteur de circuit absorbant
+    for i in graph :
+        for j in graph[i]:
+            if (j != source)and (distances[i]!=INFINITE) and (distances[j] > distances[i] + graph[i][j]):
+                negative_cycle = True
+                vertex = j
+
+    # Affichage circuit absorbant
+    if negative_cycle :
+        #vertex may not be in the cycle
+        for i in range(len(Graph_copy.V)):  
+            vertex = predecesseurs[vertex]
+        #vertex is in the cycle
+
+        cycle = []
+        vertex_of_cycle = vertex
+        while True :
+            cycle.append(vertex_of_cycle)
+            if (vertex_of_cycle == vertex) and (len(cycle)>1):
+                break
+            vertex_of_cycle = predecesseurs[vertex_of_cycle]
+        # Cycle is reversed
+        cycle.reverse()
+
+        # Nodes of the negative cycle
+        for nodes in cycle:
+            Graph_copy.fill[nodes] = "green"
+            Graph_copy.label[nodes] = "- cycle"
+
+        # Edges of the negative cycle
+        chemin = []
+        for i in range(len(cycle)-1):
+            chemin.append((cycle[i], cycle[i+1]))
+        for edge in chemin:
+            for e in Graph_copy.E :
+                if Graph_copy.orientation[e] == '->': 
+                    if e == edge:
+                        Graph_copy.color[e] = "green"
+                elif Graph_copy.orientation[e] == '<-': 
+                    if e == (edge[1],edge[0]):
+                        Graph_copy.color[e] = "green"
+        liste_graphes.append(Graph_copy.copy()) 
+
+
+    # Affichage plus courts chemins
+    if not negative_cycle :
+        chemin = [(k,v) for k,v in predecesseurs.items()]
+        chemin.remove((source, None))
+        for edge in chemin:
+            for e in Graph_copy.E :
+                if Graph_copy.orientation[e] == '-':
+                    if e == edge:
+                        Graph_copy.color[e] = "green"
+                        Graph_copy.orientation[e]='<-'
+                    elif e == (edge[1],edge[0]):
+                        Graph_copy.color[e] = "green"
+                        Graph_copy.orientation[e]='->'
+                elif Graph_copy.orientation[e] == '<-': 
+                    if e == edge:
+                        Graph_copy.color[e] = "green"
+                elif Graph_copy.orientation[e] == '->': 
+                    if e == (edge[1],edge[0]):
+                        Graph_copy.color[e] = "green"
+        liste_graphes.append(Graph_copy.copy()) 
+
+    #return distances
+    return liste_graphes
 
 
 # #########################################################

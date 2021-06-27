@@ -1,4 +1,4 @@
-# GIF-Dijktra-Python
+# LaTeX-to-GIF-Python
 
 
 User

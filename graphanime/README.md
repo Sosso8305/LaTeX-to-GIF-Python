@@ -92,6 +92,12 @@ And for more exemple go to [github](https://github.com/Sosso8305/LaTeX-to-GIF-Py
 
 # Change Log 
 
+## 0.1.0
+- fix parser (now it's take - )
+- change template FR to EN
+- add option color for all algotithm 
+- add documentation for Kruskal, Floyd-Warshall and Ford-Fulkerson
+
 ## 0.0.9
 - add Kruskal algorithm
 - add Floyd-Warshall algorithm

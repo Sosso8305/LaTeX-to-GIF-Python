@@ -92,6 +92,11 @@ And for more exemple go to [github](https://github.com/Sosso8305/LaTeX-to-GIF-Py
 
 # Change Log 
 
+## 0.1.1
+- add Bellman-Ford algorithm
+- update list of frobidden characters 
+- fix problem with Ford-Fulkerson
+
 ## 0.1.0
 - fix parser (now it's take - )
 - change template FR to EN

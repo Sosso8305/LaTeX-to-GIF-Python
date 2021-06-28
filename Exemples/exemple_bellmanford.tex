@@ -11,8 +11,8 @@
         \begin{tikzpicture} 
             \node (node 1) [circle,text=white,fill=blue!50,] {S};
             \node (node 2) [circle,text=white,fill=blue!50,above right of= node 1] {V1};
-            \node (node 3) [circle,text=white,fill=blue!50,below right of= node 1] {V2};
-            \node (node 4) [circle,text=white,fill=blue!50,right of= node 3] {v3};
+            \node (node 3) [circle,text=white,fill=blue!50,below right of= node 1, label={below:}] {V2};
+            \node (node 4) [circle,text=white,fill=blue!50,right of= node 3, label={below:}] {v3};
             \node (node 5) [circle,text=white,fill=blue!50,right of= node 2] {v4};
             
             \path (node 1) edge[->,"9",] (node 2)

@@ -317,9 +317,10 @@ def BellmanFord(Graph,source):
         cycle.reverse()
 
         # Nodes of the negative cycle
-        for nodes in cycle:
-            Graph_copy.fill[nodes] = "green"
-            Graph_copy.label[nodes] = "- cycle"
+        for node in cycle:
+            Graph_copy.fill[node] = "violet"
+            Graph_copy.label_color[node] = "violet"
+            Graph_copy.label[node] = "- cycle"
 
         # Edges of the negative cycle
         chemin = []
@@ -329,10 +330,10 @@ def BellmanFord(Graph,source):
             for e in Graph_copy.E :
                 if Graph_copy.orientation[e] == '->': 
                     if e == edge:
-                        Graph_copy.color[e] = "green"
+                        Graph_copy.color[e] = "violet"
                 elif Graph_copy.orientation[e] == '<-': 
                     if e == (edge[1],edge[0]):
-                        Graph_copy.color[e] = "green"
+                        Graph_copy.color[e] = "violet"
         liste_graphes.append(Graph_copy.copy()) 
 
 

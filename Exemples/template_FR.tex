@@ -12,7 +12,7 @@
 		\node () at(,) [] {} ;
 		\node () at(,) [] {} ;
 		
-%(nom node): caractères interdits: ) [ ;
+%(nom node): caractères interdits: ) [ ; \node
 %at(x,y): optionel : x et y doivent être des coordonnées viables: des nombres 
 %[options séparées par virgules]:  les options du nœud. Quelques détails: 			 
 	%fill=couleur
@@ -20,7 +20,7 @@
 	%label={position du label:texte du label}
 	%label={[couleur du label]:texte du label}
 	%label={[couleur du label]position du label:texte du label}
-	%texte du label : caractères interdits: ; { } ,
+		%texte du label : caractères interdits: ; { } ,
 	%draw ou draw=
 	%draw=couleur
 {Affichage}: caractères interdits: { ] ; 
@@ -35,7 +35,7 @@
 %[options séparées par virgules]:  les options de l’arrête/arc. En détail certain:
 	%-> ou <-ou -: le sens de l’arrête
 	%"edge_label": indication sur l’arrête, pour Dijkstra indique le poids, pour Dijkstra option obligatoire 
-	% edge_label : caractères interdits: ; , "
+	% edge_label : caractères interdits: ; , " \node
 	%color=couleur: la couleur de l’arrete.
 	\end{tikzpicture}
 \end{document}

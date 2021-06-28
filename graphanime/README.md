@@ -49,7 +49,7 @@ it's Back-end for APNG with a source is list of graph (anim)
 		\node () at(,) [] {} ;
 		\node () at(,) [] {} ;
 		
-%(name node): characters prohibited: ) [ ;
+%(name node): characters prohibited: ) [ ; \node
 %at(x,y): optional : x and y must to do a well coordonate : numbers 
 %[options split by comma]:  option of node. Few details: 			 
 	%fill=color
@@ -57,7 +57,7 @@ it's Back-end for APNG with a source is list of graph (anim)
 	%label={position of label:text of label}
 	%label={[color du label]:text of label}
 	%label={[color du label]position of label:text of label}
-	%text of label : characters prohibited: ; { } ,
+		%text of label : characters prohibited: ; { } ,
 	%draw ou draw=
 	%draw=color
 {Affichage}: charactères interdits: { ] ; 
@@ -72,7 +72,7 @@ it's Back-end for APNG with a source is list of graph (anim)
 %[options split by comma]:  options for edge/arc. Few details:
 	%-> or <-or -: way of edge
 	%"edge_label": indication on edge, for Dijkstra it's weight, for Dijkstra obligatory option 
-	% edge_label : characters prohibited: ; , "
+	% edge_label : characters prohibited: ; , " \node
 	%color=color: la color of edge
 	\end{tikzpicture}
 \end{document}

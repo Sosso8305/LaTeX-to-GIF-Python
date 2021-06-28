@@ -5,12 +5,20 @@ from graphanime import *
 # from graphanime.graphanime.animation import load, gen_apng, gen_beamer, gen_gif, gen_pdf
 
 def all_gen_Dijkstra():
-    x = load('Exemples/exemple_dijkstra.tex')
-    A = Dijkstra(x, "node 3", "node 5")
+    x = load('Exemples/exemple_soutenance.tex')
+    A = Dijkstra(x, "node 3", "node 8")
     gen_beamer(A,"Dijkstra_beamer")
     gen_pdf(A,"Dijkstra")
     gen_gif(A,"Dijkstra")
     gen_apng(A,"Dijkstra")
+
+def all_gen_BellmanFord():
+    x = load('Exemples/exemple_soutenance.tex')
+    A = BellmanFord(x, "node 13")
+    gen_beamer(A,"BellmanFord_beamer")
+    gen_pdf(A,"BellmanFord")
+    gen_gif(A,"BellmanFord")
+    gen_apng(A,"BellmanFord")
 
 def gen_wiki():
     x = load('Exemples/exemple_dijkstra_wiki.tex')
@@ -20,7 +28,7 @@ def gen_wiki():
     gen_apng(A, "versusWiki")
    
 def gen_floyd_warshall():
-    x = load('Exemples/exemple_bellmanford.tex')
+    x = load('Exemples/exemple_soutenance.tex')
     A = Floyd_Warshall(x)
     gen_pdf(A, "warshall")
     gen_gif(A, "warshall",1000)
@@ -36,15 +44,15 @@ def gen_floyd_warshall2():
     #gen_apng(A, "warshall")
     
 def all_gen_FordFulkerson():
-    x = load('Exemples/exemple_fordfulkerson.tex')
-    A = FordFulkerson(x, x.V[0], x.V[-1])
+    x = load('Exemples/exemple_soutenance_graphe_orienté.tex')
+    A = FordFulkerson(x, "node 1", "node 10", disp_flow=True)
     gen_beamer(A,"FordFulkerson_beamer")
     gen_pdf(A,"FordFulkerson")
     gen_gif(A,"FordFulkerson",700)
     gen_apng(A,"FordFulkerson",700)
 
 def gen_Kruskal():
-    x = load('Exemples/exemple_Kruskal.tex')
+    x = load('Exemples/exemple_soutenance.tex')
     anim = Kruskal(x)
     gen_gif(anim,"Kruskal")
     gen_apng(anim,"Kruskal")
@@ -61,8 +69,9 @@ def test():
 if __name__ == "__main__":
    
     # all_gen_FordFulkerson()  
-    # all_gen_Dijkstra()
+    all_gen_Dijkstra()
+    all_gen_BellmanFord()
     # gen_wiki()
     # gen_floyd_warshall()
-    gen_Kruskal()
-    #gen_floyd_warshall2()
+    # gen_Kruskal()
+    # gen_floyd_warshall2()

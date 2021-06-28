@@ -7,7 +7,7 @@ DEBUG = False
 __all__ = ['Dijstra','BellmanFord', 'FordFulkerson','Kruskal', 'Floyd_Warshall']
 
 # #########################################################
-# ############# Dijkstra ALGORYTHM #############
+# ################### DIJKSTRA ALGORITHM ##################
 # #########################################################
 
 def Dijkstra(Graph,source,sink, not_explored_node_color="grey!50", default_edge_color="black", begin_color="red!50", end_color="red!50", current_node_color="red", current_edge_color="green", default_label_color="black", better_way_label_color="green", no_better_way_label_color="red", explored_node_color="black", final_path_color="blue"):
@@ -185,6 +185,9 @@ def Dijkstra(Graph,source,sink, not_explored_node_color="grey!50", default_edge_
     return graph_list
 
 
+# #########################################################
+# ################# BELLMAN-FORD ALGORITHM ################
+# #########################################################
 def BellmanFord(Graph,source):
     
     # Initialisation
@@ -440,7 +443,6 @@ def depthFirstSearch(Graph, source, target, flow, capacity):
         return path
     while(True):
         if(border.isEmpty()):
-            print('Empty border')
             return None
 
         node, path = border.pop()
@@ -455,7 +457,11 @@ def depthFirstSearch(Graph, source, target, flow, capacity):
         if successors:
             for i in range(len(successors)):
                 child_node = successors[-i-1]
-                if child_node not in explored and capacity[(node, child_node)] > flow[(node, child_node)]:
+                if (node, child_node) in Graph.E:
+                    current_edge = (node, child_node)
+                elif (child_node, node) in Graph.E:
+                    current_edge = (child_node, node)
+                if child_node not in explored and capacity[current_edge] > flow[current_edge]:
                     route = path + [node]
                     border.push((child_node, route)) 
         elif predecessors:
@@ -464,10 +470,6 @@ def depthFirstSearch(Graph, source, target, flow, capacity):
                 if father_node not in explored and flow[(father_node, node)] > 0:
                     route = path + [node]
                     border.push((father_node, route)) 
-
-        if route == []:
-            return None
-
 
 def FordFulkerson(Graph, source, well, disp_flow=False, not_explored_node_color="grey!50", default_edge_color="black", begin_border_color="red!50", end_border_color="red!50", current_edge_color="green", saturated_edge_color="red!25", saturated_edge_option="dashed"):
     """
@@ -510,9 +512,12 @@ def FordFulkerson(Graph, source, well, disp_flow=False, not_explored_node_color=
     graph_list.append(Graph_copy.copy())
 
     better_way_nodes = depthFirstSearch(Graph_copy, source, well, flow, capacity)
+    k = 0
     while(better_way_nodes): # While the depthFirstSearch function finds a path through the graph
         if DEBUG:
             print("=" * 50)
+            print("Boucle ", k)
+            k += 1
             print("Chosen path: ", better_way_nodes)
             print("Flows before execution: ", flow)
         better_way_edges = [] # The depthFirstSearch function returns a sequence of nodes, that must be transformed into a sequence of edges
@@ -522,17 +527,25 @@ def FordFulkerson(Graph, source, well, disp_flow=False, not_explored_node_color=
         edges_to_increase = []
         edges_to_lower = []
         for edge in better_way_edges:
-            if edge in Graph_copy.E:
+            if (edge in Graph_copy.E and Graph_copy.orientation[edge]=='->'):
                 # If the edge is in the graph, its current flow will be increased
                 edges_to_increase.append(edge)
-            elif (edge[1], edge[0]) in Graph_copy.E:
+            elif ((edge[1], edge[0]) in Graph_copy.E and Graph_copy.orientation[(edge[1], edge[0])]=='<-'):
+                edges_to_increase.append((edge[1], edge[0]))
+            elif (edge in Graph_copy.E and Graph_copy.orientation[edge]=='<-'):
                 # If the edge is in the graph but in the opposite direction, its current flow will be lowered
+                edges_to_lower.append(edge)
+            elif ((edge[1], edge[0]) in Graph_copy.E and Graph_copy.orientation[(edge[1], edge[0])]=='->'):
                 edges_to_lower.append((edge[1], edge[0]))
 
         for e in edges_to_increase + edges_to_lower:
             Graph_copy.color[e] = current_edge_color # The edges in the chosen path are coloured
         graph_list.append(Graph_copy.copy())            
         
+        if DEBUG:
+            print("Aretes a augmenter : ", edges_to_increase)
+            print("Aretes a diminuer : ", edges_to_lower)
+
         flow_of_way = min([capacity[e] - flow[e] for e in edges_to_increase] + [flow[e] for e in edges_to_lower])
 
         # Increasing or lowering flow on edges
@@ -558,6 +571,7 @@ def FordFulkerson(Graph, source, well, disp_flow=False, not_explored_node_color=
             print("Flows after execution: ", flow)
             print("Capacities :", capacity)
 
+        better_way_nodes = []
         better_way_nodes = depthFirstSearch(Graph_copy, source, well, flow, capacity)
 
     # Computing the maximum flow accepted by the graph. By default it is not displayed, but it can be if the user sets disp_flow to 'True'
@@ -667,7 +681,7 @@ def Kruskal(Graph,display_weight=False,color_current_edge="blue",color_good_edge
     return graph_list
 
 # #########################################################
-# ############# FLOYD MARSHALL ALGORYTHM #############
+# ############### FLOYD-WARSHALL ALGORITHM ################
 # #########################################################
 
 # L'algorythme marche différemment en cas de graph orienté et non orienté, si un graph est orienté alors attention : en cas d'arrete notre algorythme les transformera en double arc, mais pas très joliment
@@ -753,10 +767,11 @@ def Floyd_Warshall(Graph, exploration_color='red', is_being_modified_color='gree
                         Graph.E.append(path)
                         Graph.orientation[path]='-'
                     #dist=str(int(Graph.edge_label[((i,k) if (i,k) in Graph.E else (k,i))])+int(Graph.edge_label[((k,j) if (k,j) in Graph.E else (j,k))]))
-                print(shortcut1)
-                print(Graph.edge_label[shortcut1])
-                print(shortcut2)
-                print(Graph.edge_label[shortcut2])
+                if DEBUG:
+                    print(shortcut1)
+                    print(Graph.edge_label[shortcut1])
+                    print(shortcut2)
+                    print(Graph.edge_label[shortcut2])
                 dist=str(int(Graph.edge_label[shortcut1])+int(Graph.edge_label[shortcut2]))
                 tmp_color1=Graph.color[shortcut1]
                 tmp_color2=Graph.color[shortcut2]

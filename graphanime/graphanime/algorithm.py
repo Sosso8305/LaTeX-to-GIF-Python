@@ -4,10 +4,10 @@ from collections import defaultdict
 INFINITE = "$\infty$"
 DEBUG = False
 
-__all__ = ['Dijstra', 'FordFulkerson','Kruskal', 'Floyd_Warshall']
+__all__ = ['Dijstra','BellmanFord', 'FordFulkerson','Kruskal', 'Floyd_Warshall']
 
 # #########################################################
-# ############# Dijkstra ALGORYTHM #############
+# ################### DIJKSTRA ALGORITHM ##################
 # #########################################################
 
 def Dijkstra(Graph,source,sink, not_explored_node_color="grey!50", default_edge_color="black", begin_color="red!50", end_color="red!50", current_node_color="red", current_edge_color="green", default_label_color="black", better_way_label_color="green", no_better_way_label_color="red", explored_node_color="black", final_path_color="blue"):
@@ -185,6 +185,9 @@ def Dijkstra(Graph,source,sink, not_explored_node_color="grey!50", default_edge_
     return graph_list
 
 
+# #########################################################
+# ################# BELLMAN-FORD ALGORITHM ################
+# #########################################################
 def BellmanFord(Graph,source):
     
     # Initialisation
@@ -192,16 +195,6 @@ def BellmanFord(Graph,source):
     Graph_copy = Graph.copy()
     Graph_copy.label[source] = str(0) # Distance source à source = 0
     graph = defaultdict(dict)
-    for (A,B) in Graph_copy.E :
-        graph[A][B] = None
-        graph[B][A] = None
-    for i in graph :
-        for j in graph[i]:
-            for e in Graph_copy.E :
-                if (i,j) == e:
-                    graph[i][j] = Graph_copy.edge_label[e]
-                elif (j,i) == e:
-                    graph[i][j] = Graph_copy.edge_label[e]
 
     # Initialisation graphique
     for v in Graph_copy.V:
@@ -209,31 +202,164 @@ def BellmanFord(Graph,source):
         Graph_copy.label[v] = INFINITE
     for e in Graph_copy.E:
         Graph_copy.color[e] = "black"
-    liste_graphes.append(Graph_copy.copy())
-    if DEBUG: print("couleur, dans le graphe, du node ", source, " colorie : ", Graph_copy.fill[source])
+    Graph_copy.contour_color[source] = "red!50"
 
-    # Début (mathématique)
-    distances = {}
-    predecesseurs = {}
-    for node in graph :
-        distances[node] = 'infini'
-        predecesseurs[node] = None
-    distances[source]= 0
-
-    # Corps
-    for k in range(len(graph) - 1):
-        for i in graph :
-            for j in graph[i]:
-                if distances[j] > distances[i] + graph[i][j]:
-                    distances[j]  = distances[i] + graph[i][j]
-                    predecesseurs[j] = i
-    
+    # Construction dictionnaire voisin avec poids => {'noeud':{'voisin' : poids, ...}, ... }
+    for e in Graph_copy.E :
+        if Graph_copy.orientation[e] == '-' :
+            graph[e[0]][e[1]] = None
+            graph[e[1]][e[0]] = None
+        elif Graph_copy.orientation[e] == '->':
+            graph[e[0]][e[1]] = None
+            if e[1] not in graph.keys():
+                graph[e[1]] = {}
+        elif Graph_copy.orientation[e] == '<-' :
+            graph[e[1]][e[0]] = None
+            if e[0] not in graph.keys():
+                graph[e[0]] = {}
     for i in graph :
         for j in graph[i]:
-            if distances[j] <= distances[i] + graph[i][j]:
-                return "Donne un GRAPH QUI PEUT MARCHER!!!!!\n"
+            for e in Graph_copy.E :
+                if Graph_copy.orientation[e] == '-':
+                    if e == (i,j):
+                        graph[i][j] = int(Graph_copy.edge_label[e])
+                    elif e == (j,i):
+                        graph[i][j] = int(Graph_copy.edge_label[e])
+                elif Graph_copy.orientation[e] == '->': 
+                    if e == (i,j):
+                        graph[i][j] = int(Graph_copy.edge_label[e])
+                elif Graph_copy.orientation[e] == '<-': 
+                    if (e[1],e[0]) == (i,j):
+                        graph[i][j] = int(Graph_copy.edge_label[e]) 
+
+    if DEBUG : print(graph)
+
+    # Début 
+    negative_cycle = False
+    distances = {}
+    predecesseurs = {}
+    for noeud in graph :
+        distances[noeud] = INFINITE
+        predecesseurs[noeud] = None
+    distances[source]= 0
+    Graph_copy.label[source] = 0
+    if DEBUG : print(distances)
+    liste_graphes.append(Graph_copy.copy())
+
+    # Corps
+    ancien_j = None
+    ancien_e = None
+    for k in range(len(graph) - 1):
+        for i in graph : 
+            for j in graph[i]:
+                if (distances[i]!=INFINITE) and (distances[j]==INFINITE or (distances[j] > distances[i] + graph[i][j])):
+                    if ancien_j != None and ancien_e != None:
+                        Graph_copy.label_color[ancien_j] = "black"
+                        Graph_copy.fill[ancien_j] = "grey!50"
+                        Graph_copy.color[ancien_e] = "black"
+                        liste_graphes.append(Graph_copy.copy())
+                    Graph_copy.label_color[j] = "red"
+                    Graph_copy.label[j] = str(distances[j]) + " $>$ " + str(distances[i]) + " + " + str(graph[i][j])
+                    for e in Graph_copy.E :
+                        if Graph_copy.orientation[e] == '-':
+                            if e == (i,j):
+                                Graph_copy.color[e] = "red"
+                                ancien_e = e
+                            elif e == (j,i):
+                                Graph_copy.color[e] = "red"
+                                ancien_e = e
+                        elif Graph_copy.orientation[e] == '->': 
+                            if e == (i,j):
+                               Graph_copy.color[e] = "red"
+                               ancien_e = e
+                        elif Graph_copy.orientation[e] == '<-': 
+                            if e == (j,i):
+                               Graph_copy.color[e] = "red"
+                               ancien_e = e
+                    liste_graphes.append(Graph_copy.copy())
+                    distances[j] = distances[i] + graph[i][j]
+                    Graph_copy.label[j] = distances[j]
+                    Graph_copy.fill[j] = "red"
+                    liste_graphes.append(Graph_copy.copy())
+                    ancien_j = j
+                    predecesseurs[j] = i
+    Graph_copy.label_color[ancien_j] = "black"
+    Graph_copy.fill[ancien_j] = "grey!50"
+    Graph_copy.color[ancien_e] = "black"
+    liste_graphes.append(Graph_copy.copy())
+          
+    if DEBUG :
+        print(distances)
+        print(predecesseurs)
     
-    return distances, predecesseurs
+    # Detecteur de circuit absorbant
+    for i in graph :
+        for j in graph[i]:
+            if (j != source)and (distances[i]!=INFINITE) and (distances[j] > distances[i] + graph[i][j]):
+                negative_cycle = True
+                vertex = j
+
+    # Affichage circuit absorbant
+    if negative_cycle :
+        #vertex may not be in the cycle
+        for i in range(len(Graph_copy.V)):  
+            vertex = predecesseurs[vertex]
+        #vertex is in the cycle
+
+        cycle = []
+        vertex_of_cycle = vertex
+        while True :
+            cycle.append(vertex_of_cycle)
+            if (vertex_of_cycle == vertex) and (len(cycle)>1):
+                break
+            vertex_of_cycle = predecesseurs[vertex_of_cycle]
+        # Cycle is reversed
+        cycle.reverse()
+
+        # Nodes of the negative cycle
+        for node in cycle:
+            Graph_copy.fill[node] = "violet"
+            Graph_copy.label_color[node] = "violet"
+            Graph_copy.label[node] = "- cycle"
+
+        # Edges of the negative cycle
+        chemin = []
+        for i in range(len(cycle)-1):
+            chemin.append((cycle[i], cycle[i+1]))
+        for edge in chemin:
+            for e in Graph_copy.E :
+                if Graph_copy.orientation[e] == '->': 
+                    if e == edge:
+                        Graph_copy.color[e] = "violet"
+                elif Graph_copy.orientation[e] == '<-': 
+                    if e == (edge[1],edge[0]):
+                        Graph_copy.color[e] = "violet"
+        liste_graphes.append(Graph_copy.copy()) 
+
+
+    # Affichage plus courts chemins
+    if not negative_cycle :
+        chemin = [(k,v) for k,v in predecesseurs.items()]
+        chemin.remove((source, None))
+        for edge in chemin:
+            for e in Graph_copy.E :
+                if Graph_copy.orientation[e] == '-':
+                    if e == edge:
+                        Graph_copy.color[e] = "green"
+                        Graph_copy.orientation[e]='<-'
+                    elif e == (edge[1],edge[0]):
+                        Graph_copy.color[e] = "green"
+                        Graph_copy.orientation[e]='->'
+                elif Graph_copy.orientation[e] == '<-': 
+                    if e == edge:
+                        Graph_copy.color[e] = "green"
+                elif Graph_copy.orientation[e] == '->': 
+                    if e == (edge[1],edge[0]):
+                        Graph_copy.color[e] = "green"
+        liste_graphes.append(Graph_copy.copy()) 
+
+    #return distances
+    return liste_graphes
 
 
 # #########################################################
@@ -318,7 +444,6 @@ def depthFirstSearch(Graph, source, target, flow, capacity):
         return path
     while(True):
         if(border.isEmpty()):
-            print('Empty border')
             return None
 
         node, path = border.pop()
@@ -333,7 +458,11 @@ def depthFirstSearch(Graph, source, target, flow, capacity):
         if successors:
             for i in range(len(successors)):
                 child_node = successors[-i-1]
-                if child_node not in explored and capacity[(node, child_node)] > flow[(node, child_node)]:
+                if (node, child_node) in Graph.E:
+                    current_edge = (node, child_node)
+                elif (child_node, node) in Graph.E:
+                    current_edge = (child_node, node)
+                if child_node not in explored and capacity[current_edge] > flow[current_edge]:
                     route = path + [node]
                     border.push((child_node, route)) 
         elif predecessors:
@@ -342,10 +471,6 @@ def depthFirstSearch(Graph, source, target, flow, capacity):
                 if father_node not in explored and flow[(father_node, node)] > 0:
                     route = path + [node]
                     border.push((father_node, route)) 
-
-        if route == []:
-            return None
-
 
 def FordFulkerson(Graph, source, well, disp_flow=False, not_explored_node_color="grey!50", default_edge_color="black", begin_border_color="red!50", end_border_color="red!50", current_edge_color="green", saturated_edge_color="red!25", saturated_edge_option="dashed"):
     """
@@ -388,9 +513,12 @@ def FordFulkerson(Graph, source, well, disp_flow=False, not_explored_node_color=
     graph_list.append(Graph_copy.copy())
 
     better_way_nodes = depthFirstSearch(Graph_copy, source, well, flow, capacity)
+    k = 0
     while(better_way_nodes): # While the depthFirstSearch function finds a path through the graph
         if DEBUG:
             print("=" * 50)
+            print("Boucle ", k)
+            k += 1
             print("Chosen path: ", better_way_nodes)
             print("Flows before execution: ", flow)
         better_way_edges = [] # The depthFirstSearch function returns a sequence of nodes, that must be transformed into a sequence of edges
@@ -400,17 +528,25 @@ def FordFulkerson(Graph, source, well, disp_flow=False, not_explored_node_color=
         edges_to_increase = []
         edges_to_lower = []
         for edge in better_way_edges:
-            if edge in Graph_copy.E:
+            if (edge in Graph_copy.E and Graph_copy.orientation[edge]=='->'):
                 # If the edge is in the graph, its current flow will be increased
                 edges_to_increase.append(edge)
-            elif (edge[1], edge[0]) in Graph_copy.E:
+            elif ((edge[1], edge[0]) in Graph_copy.E and Graph_copy.orientation[(edge[1], edge[0])]=='<-'):
+                edges_to_increase.append((edge[1], edge[0]))
+            elif (edge in Graph_copy.E and Graph_copy.orientation[edge]=='<-'):
                 # If the edge is in the graph but in the opposite direction, its current flow will be lowered
+                edges_to_lower.append(edge)
+            elif ((edge[1], edge[0]) in Graph_copy.E and Graph_copy.orientation[(edge[1], edge[0])]=='->'):
                 edges_to_lower.append((edge[1], edge[0]))
 
         for e in edges_to_increase + edges_to_lower:
             Graph_copy.color[e] = current_edge_color # The edges in the chosen path are coloured
         graph_list.append(Graph_copy.copy())            
         
+        if DEBUG:
+            print("Aretes a augmenter : ", edges_to_increase)
+            print("Aretes a diminuer : ", edges_to_lower)
+
         flow_of_way = min([capacity[e] - flow[e] for e in edges_to_increase] + [flow[e] for e in edges_to_lower])
 
         # Increasing or lowering flow on edges
@@ -436,6 +572,7 @@ def FordFulkerson(Graph, source, well, disp_flow=False, not_explored_node_color=
             print("Flows after execution: ", flow)
             print("Capacities :", capacity)
 
+        better_way_nodes = []
         better_way_nodes = depthFirstSearch(Graph_copy, source, well, flow, capacity)
 
     # Computing the maximum flow accepted by the graph. By default it is not displayed, but it can be if the user sets disp_flow to 'True'
@@ -545,7 +682,7 @@ def Kruskal(Graph,display_weight=False,color_current_edge="blue",color_good_edge
     return graph_list
 
 # #########################################################
-# ############# FLOYD MARSHALL ALGORYTHM #############
+# ############### FLOYD-WARSHALL ALGORITHM ################
 # #########################################################
 
 # L'algorythme marche différemment en cas de graph orienté et non orienté, si un graph est orienté alors attention : en cas d'arrete notre algorythme les transformera en double arc, mais pas très joliment
@@ -631,10 +768,11 @@ def Floyd_Warshall(Graph, exploration_color='red', is_being_modified_color='gree
                         Graph.E.append(path)
                         Graph.orientation[path]='-'
                     #dist=str(int(Graph.edge_label[((i,k) if (i,k) in Graph.E else (k,i))])+int(Graph.edge_label[((k,j) if (k,j) in Graph.E else (j,k))]))
-                print(shortcut1)
-                print(Graph.edge_label[shortcut1])
-                print(shortcut2)
-                print(Graph.edge_label[shortcut2])
+                if DEBUG:
+                    print(shortcut1)
+                    print(Graph.edge_label[shortcut1])
+                    print(shortcut2)
+                    print(Graph.edge_label[shortcut2])
                 dist=str(int(Graph.edge_label[shortcut1])+int(Graph.edge_label[shortcut2]))
                 tmp_color1=Graph.color[shortcut1]
                 tmp_color2=Graph.color[shortcut2]
